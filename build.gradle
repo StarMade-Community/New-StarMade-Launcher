@@ -7,7 +7,7 @@ plugins {
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.1.5'
+version = '3.1.6'
 
 java {
 	toolchain {
@@ -17,7 +17,6 @@ java {
 
 application {
 	mainClassName = 'smlauncher.StarMadeLauncher'
-//	mainModule = 'smlauncher'
 }
 
 repositories {
@@ -74,7 +73,7 @@ jpackage {
 	appName = "StarMade-Launcher"
 	appVersion = project.version.toString()
 	vendor = "Schine GmbH"
-	copyright = "Copyright (c) 2024 Schine GmbH"
+	copyright = "Copyright (c) 2025 Schine GmbH"
 	runtimeImage = System.getProperty("java.home")
 	type = "app-image"
 	mac {
@@ -85,6 +84,11 @@ jpackage {
 	}
 	linux {
 		icon = "./src/main/resources/starmade.png"
+		options = [
+//			'--linux-shortcut',
+			'--linux-menu-group', 'Games',
+			'--linux-app-category', 'Game'
+		]
 	}
 }
 
@@ -110,14 +114,21 @@ tasks.register('package') {
 			exec {
 				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher.app', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
 			}
-			exec { //Mark as executable AND sign because MacOS is picky
-				commandLine 'chmod', '+x', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+			
+			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
+				if (details.file.isFile()) {
+					exec {
+						commandLine 'chmod', '+x', details.file.absolutePath
+					}
+				}
 			}
-			exec { //Mark as executable AND sign because MacOS is picky
-				commandLine 'chmod', '+x', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app/Contents/app/StarMade-Launcher.jar'
-			}
+			
 			exec {
-				commandLine 'codesign', '--sign', '-', '--force', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+				commandLine 'xattr', '-cr', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+			}
+			
+			exec {
+				commandLine 'codesign', '--sign', '-', '--force', '--deep', '--timestamp', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
 			}
 		}
 		if (os == 'linux') {
@@ -125,11 +136,17 @@ tasks.register('package') {
 				from 'StarMade-dedicated-server-linux.sh'
 				into 'release-builds/' + os + '/StarMade-Launcher/'
 			}
+			
+			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
+				if (details.file.isFile()) {
+					exec {
+						commandLine 'chmod', '+x', details.file.absolutePath
+					}
+				}
+			}
+			
 			exec {
 				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher/bin/StarMade-Launcher', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
-			}
-			exec { //Mark as executable
-				commandLine 'chmod', '+x', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
 			}
 		}
 	}
