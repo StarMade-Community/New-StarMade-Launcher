@@ -25,11 +25,12 @@ public class LauncherUpdaterHelper {
 	 * Checks whether the launcher should be updated.
 	 */
 	public static boolean checkForUpdate() {
-		String currentVersion = StarMadeLauncher.LAUNCHER_VERSION;
-		String latestVersion = getLatestVersion();
-		System.err.println("Current Launcher Version: " + currentVersion);
-		System.err.println("Latest Launcher Version: " + latestVersion);
-		return !currentVersion.equals(latestVersion);
+		return false;
+//		String currentVersion = StarMadeLauncher.LAUNCHER_VERSION;
+//		String latestVersion = getLatestVersion();
+//		System.err.println("Current Launcher Version: " + currentVersion);
+//		System.err.println("Latest Launcher Version: " + latestVersion);
+//		return !currentVersion.equals(latestVersion);
 	}
 
 	/**

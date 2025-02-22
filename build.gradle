@@ -84,11 +84,6 @@ jpackage {
 	}
 	linux {
 		icon = "./src/main/resources/starmade.png"
-		options = [
-//			'--linux-shortcut',
-			'--linux-menu-group', 'Games',
-			'--linux-app-category', 'Game'
-		]
 	}
 }
 
