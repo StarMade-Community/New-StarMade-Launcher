@@ -24,7 +24,7 @@ jobs:
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
-                    name: build-artifacts-${{ matrix.os }}
+                    name: starmade-launcher-${{ matrix.os }}
                     path: ./release-builds
     publish-executables:
         name: 'Publish Executables'
@@ -40,7 +40,7 @@ jobs:
             -   name: 'Download Build Artifacts'
                 uses: actions/download-artifact@v4
                 with:
-                    name: build-artifacts-*
+                    name: starmade-launcher-*
                     path: ./release-builds
                     pattern: '**/*.zip'
                     merge-multiple: true
@@ -49,13 +49,13 @@ jobs:
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r StarMade-Launcher-Linux.zip ./release-builds/linux
+                    zip -r starmade-launcher-ubuntu-latest.zip ./release-builds/linux
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r StarMade-Launcher-Windows.zip ./release-builds/windows
+                    zip -r starmade-launcher-windows-latest.zip ./release-builds/windows
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/macos
+                    zip -r starmade-launcher-macos-latest.zip ./release-builds/macos
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1
@@ -72,8 +72,8 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:
                     upload_url: ${{ steps.create_release.outputs.upload_url }}
-                    asset_path: StarMade-Launcher-Linux.zip
-                    asset_name: StarMade-Launcher-Linux.zip
+                    asset_path: starmade-launcher-ubuntu-latest.zip
+                    asset_name: starmade-launcher-ubuntu-latest.zip
                     asset_content_type: application/zip
             -   name: 'Upload Release Asset (Windows)'
                 uses: actions/upload-release-asset@v1
@@ -81,8 +81,8 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:
                     upload_url: ${{ steps.create_release.outputs.upload_url }}
-                    asset_path: StarMade-Launcher-Windows.zip
-                    asset_name: StarMade-Launcher-Windows.zip
+                    asset_path: starmade-launcher-windows-latest.zip
+                    asset_name: starmade-launcher-windows-latest.zip
                     asset_content_type: application/zip
             -   name: 'Upload Release Asset (MacOS)'
                 uses: actions/upload-release-asset@v1
@@ -90,6 +90,6 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:
                     upload_url: ${{ steps.create_release.outputs.upload_url }}
-                    asset_path: StarMade-Launcher-MacOS.zip
-                    asset_name: StarMade-Launcher-MacOS.zip
+                    asset_path: starmade-launcher-macos-latest.zip
+                    asset_name: starmade-launcher-macos-latest.zip
                     asset_content_type: application/zip
