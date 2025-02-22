@@ -87,6 +87,10 @@
 		{
 			"version": "3.1.5",
 			"versionDate": "2024-12-8"
+		},
+		{
+			"version": "3.1.6",
+			"versionDate": "2025-2-22"
 		}
 	]
 }

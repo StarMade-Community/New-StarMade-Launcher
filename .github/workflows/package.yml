@@ -22,7 +22,7 @@ jobs:
                 run: |
                     ./gradlew package
             -   name: 'Upload Build Artifacts'
-                uses: actions/upload-artifact@v3
+                uses: actions/upload-artifact@v4
                 with:
                     name: build-artifacts
                     path: ./release-builds
@@ -91,16 +91,3 @@ jobs:
                     asset_path: StarMade-Launcher-MacOS.zip
                     asset_name: StarMade-Launcher-MacOS.zip
                     asset_content_type: application/zip
-    update-versions-json:
-        name: 'Update Versions JSON'
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-            pull-requests: write
-            repository-projects: write
-        steps:
-            -   name: 'Checkout'
-                uses: actions/checkout@v3
-            -   name: 'Update Versions JSON'
-                run: |
-                    echo ",\n\t{\n\t\t\"version\": \"${{ env.VERSION }}\",\n\t\t\"versionDate\": \"$(date +'%Y-%m-%d')\"\n\t}" >> versions.json
