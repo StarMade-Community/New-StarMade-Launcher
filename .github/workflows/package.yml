@@ -34,6 +34,9 @@ jobs:
             -   name: 'Build Executable'
                 run: |
                     native-image --no-server --no-fallback --allow-incomplete-classpath -jar ./lib/StarMade-Starter.jar
+            -   name: 'List Files Recursively'
+                run: |
+                    ls -R
             -   name: 'Rename to StarMade-Launcher (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
