@@ -34,14 +34,30 @@ jobs:
             -   name: 'Build Executable'
                 run: |
                     native-image --no-server --no-fallback --allow-incomplete-classpath -jar ./lib/StarMade-Starter.jar
-            -   name: 'Rename to StarMade-Launcher (Non-Windows)'
-                if: ${{ matrix.os != 'windows-latest' }}
+            -   name: 'Rename to StarMade-Launcher (Linux)'
+                if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    mv StarMade-Starter StarMade-Launcher
+                    mv ./release-builds/Linux/StarMade-Starter ./release-builds/Linux/StarMade-Launcher
             -   name: 'Rename to StarMade-Launcher (Windows)'
                 if: ${{ matrix.os == 'windows-latest' }}
                 run: |
-                    mv StarMade-Starter.exe StarMade-Launcher.exe
+                    mv ./release-builds/Windows/StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher.exe
+            -   name: 'Rename to StarMade-Launcher (MacOS)'
+                if: ${{ matrix.os == 'macos-latest' }}
+                run: |
+                    mv ./release-builds/MacOS/StarMade-Starter ./release-builds/MacOS/StarMade-Launcher
+            -   name: 'Mark as Executable (Linux)'
+                if: ${{ matrix.os == 'ubuntu-latest' }}
+                run: |
+                    chmod +x ./release-builds/Linux/StarMade-Launcher
+            -   name: 'Mark as Executable (MacOS)'
+                if: ${{ matrix.os == 'macos-latest' }}
+                run: |
+                    chmod +x ./release-builds/MacOS/StarMade-Launcher
+            -   name: 'Code Signing (MacOS)'
+                if: ${{ matrix.os == 'macos-latest' }}
+                run: |
+                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
@@ -62,19 +78,19 @@ jobs:
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Linux
-                    path: ./release-builds
+                    path: ./release-builds/Linux
                     merge-multiple: true
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Windows
-                    path: ./release-builds
+                    path: ./release-builds/Windows
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-MacOS
-                    path: ./release-builds
+                    path: ./release-builds/MacOS
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
@@ -84,13 +100,13 @@ jobs:
                     ls -R
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r StarMade-Launcher-Linux.zip ./release-builds/StarMade-Launcher-Linux
+                    zip -r StarMade-Launcher-Linux.zip ./release-builds/Linux/StarMade-Launcher
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r StarMade-Launcher-Windows.zip ./release-builds/StarMade-Launcher-Windows
+                    zip -r StarMade-Launcher-Windows.zip ./release-builds/Windows/StarMade-Launcher
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/StarMade-Launcher-MacOS
+                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1
