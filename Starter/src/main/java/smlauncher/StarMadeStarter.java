@@ -12,7 +12,7 @@ public class StarMadeStarter {
 	public static void main(String[] args) {
 		try {
 			//Look for ./lib/StarMade Launcher.jar
-			String launcherPath = "./lib/StarMade Launcher.jar";
+			String launcherPath = "./lib/StarMade-Launcher.jar";
 			File launcher = new File(launcherPath);
 			if(launcher.exists()) {
 				if(!launcher.canExecute()) {

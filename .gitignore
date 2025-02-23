@@ -30,3 +30,4 @@ version.txt
 .java-version
 /Starter/.gradle/
 /Starter/build/
+/lib/

@@ -1,10 +1,9 @@
 plugins {
     id 'java'
-    id 'org.graalvm.buildtools.native' version '0.10.5'
 }
 
 group = 'smlauncher'
-version = '3.1.6'
+version = '3.1.7'
 
 repositories {
     mavenCentral()
@@ -19,37 +18,15 @@ test {
     useJUnitPlatform()
 }
 
-graalvmNative {
-    binaries {
-        main {
-            imageName = 'StarMade Launcher'
-            mainClass = 'smlauncher.StarMadeStarter'
-            javaLauncher = javaToolchains.launcherFor {
-                languageVersion = JavaLanguageVersion.of(21)
-            }
-            useFatJar = true
-        }
+jar {
+    dependsOn(clean)
+    manifest {
+        attributes 'Main-Class': 'smlauncher.StarMadeStarter'
     }
-}
-
-var os = System.getProperty('os.name').toLowerCase()
-if(os.contains('win')) os = 'windows-latest' 
-else if (os.contains('mac')) os = 'macos-latest' 
-else os = 'ubuntu-latest'
-
-tasks.register('package') {
-    dependsOn('nativeCompile')
-    doLast {
-        for(File f : file('./build/native/nativeCompile').listFiles()) {
-            if(f.name.endsWith('.args')) f.delete()
-        }
-        copy {
-            from './build/native/nativeCompile'
-            into '../release-builds/' + os + '/StarMade-Launcher'
-        }
-//        exec {
-//            workingDir '../'
-//            commandLine 'gradle', 'package'
-//        }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    archiveFileName = 'StarMade-Starter.jar'
+    destinationDirectory = file('../lib/')
 }
