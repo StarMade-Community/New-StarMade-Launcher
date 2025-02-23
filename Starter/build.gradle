@@ -6,6 +6,12 @@ plugins {
 group = 'smlauncher'
 version = '3.1.7'
 
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
 application {
     mainClassName = 'smlauncher.StarMadeStarter'
 }
