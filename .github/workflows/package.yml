@@ -69,13 +69,13 @@ jobs:
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r starmade-launcher-ubuntu-latest.zip ./release-builds/linux
+                    zip -r starmade-launcher-ubuntu-latest.zip ./release-builds/ubuntu-latest
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r starmade-launcher-windows-latest.zip ./release-builds/windows
+                    zip -r starmade-launcher-windows-latest.zip ./release-builds/windows-latest
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r starmade-launcher-macos-latest.zip ./release-builds/macos
+                    zip -r starmade-launcher-macos-latest.zip ./release-builds/macos-latest
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1
