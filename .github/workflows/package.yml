@@ -40,27 +40,27 @@ jobs:
             -   name: 'Rename to StarMade-Launcher (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
+                    mv ./StarMade-Starter ./release-builds/Linux/StarMade-Launcher
             -   name: 'Rename to StarMade-Launcher (Windows)'
                 if: ${{ matrix.os == 'windows-latest' }}
                 run: |
-                    mv ./StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher/StarMade-Launcher.exe
+                    mv ./StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher.exe
             -   name: 'Rename to StarMade-Launcher (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    mv ./StarMade-Starter ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Mark as Executable (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    chmod +x ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
+                    chmod +x ./release-builds/Linux/StarMade-Launcher
             -   name: 'Mark as Executable (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    chmod +x ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    chmod +x ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Code Signing (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
@@ -103,13 +103,13 @@ jobs:
                     ls -R
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r StarMade-Launcher-Linux.zip ./release-builds/Linux/StarMade-Launcher
+                    zip -r StarMade-Launcher-Linux.zip ./release-builds/Linux
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r StarMade-Launcher-Windows.zip ./release-builds/Windows/StarMade-Launcher
+                    zip -r StarMade-Launcher-Windows.zip ./release-builds/Windows
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/MacOS/StarMade-Launcher
+                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/MacOS
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1
