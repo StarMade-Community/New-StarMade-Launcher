@@ -37,12 +37,26 @@ jobs:
         steps:
             -   name: 'Checkout'
                 uses: actions/checkout@v3
-            -   name: 'Download Build Artifacts'
+            -   name: 'Download Build Artifacts (Linux)'
                 uses: actions/download-artifact@v4
                 with:
-                    name: starmade-launcher-*
+                    name: starmade-launcher-unbuntu-latest
                     path: ./release-builds
-                    pattern: '**/*.zip'
+                    pattern: 'starmade-launcher-unbuntu-latest.zip'
+                    merge-multiple: true
+            -   name: 'Download Build Artifacts (Windows)'
+                uses: actions/download-artifact@v4
+                with:
+                    name: starmade-launcher-windows-latest
+                    path: ./release-builds
+                    pattern: 'starmade-launcher-windows-latest.zip'
+                    merge-multiple: true
+            -   name: 'Download Build Artifacts (MacOS)'
+                uses: actions/download-artifact@v4
+                with:
+                    name: starmade-launcher-macos-latest
+                    path: ./release-builds
+                    pattern: 'starmade-launcher-macos-latest.zip' 
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
