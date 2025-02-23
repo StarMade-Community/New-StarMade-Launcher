@@ -34,6 +34,14 @@ jobs:
             -   name: 'Build Executable'
                 run: |
                     native-image --no-server --no-fallback --allow-incomplete-classpath -jar ./lib/StarMade-Starter.jar
+            -   name: 'Rename to StarMade-Launcher (Non-Windows)'
+                if: ${{ matrix.os != 'windows-latest' }}
+                run: |
+                    mv StarMade-Starter StarMade-Launcher
+            -   name: 'Rename to StarMade-Launcher (Windows)'
+                if: ${{ matrix.os == 'windows-latest' }}
+                run: |
+                    mv StarMade-Starter.exe StarMade-Launcher.exe
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
@@ -59,7 +67,7 @@ jobs:
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
-                    name: StarMae-Launcher-Windows
+                    name: StarMade-Launcher-Windows
                     path: ./release-builds
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
