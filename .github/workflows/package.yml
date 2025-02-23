@@ -24,7 +24,7 @@ jobs:
             -   name: 'Setup GraalVM Environment'
                 uses: DeLaGuardo/setup-graalvm@2.0
                 with:
-                    graalvm-version: '21.0.2.java21'
+                    graalvm-version: '21.0.2'
             -   name: 'Install Native Image Plugin'
                 run: |
                     gu install native-image
