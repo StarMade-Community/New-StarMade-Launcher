@@ -40,27 +40,27 @@ jobs:
             -   name: 'Rename to StarMade-Launcher (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/Linux/StarMade-Launcher
+                    mv ./StarMade-Starter ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
             -   name: 'Rename to StarMade-Launcher (Windows)'
                 if: ${{ matrix.os == 'windows-latest' }}
                 run: |
-                    mv ./StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher.exe
+                    mv ./StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher/StarMade-Launcher.exe
             -   name: 'Rename to StarMade-Launcher (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/MacOS/StarMade-Launcher
+                    mv ./StarMade-Starter ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
             -   name: 'Mark as Executable (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    chmod +x ./release-builds/Linux/StarMade-Launcher
+                    chmod +x ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
             -   name: 'Mark as Executable (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    chmod +x ./release-builds/MacOS/StarMade-Launcher
+                    chmod +x ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
             -   name: 'Code Signing (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher
+                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
