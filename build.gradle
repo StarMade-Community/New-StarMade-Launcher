@@ -114,5 +114,5 @@ tasks.register('package') {
 //				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher/bin/StarMade-Launcher', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
 //			}
 		}
-	}	
+	}
 }

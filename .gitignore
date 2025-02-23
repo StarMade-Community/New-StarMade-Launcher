@@ -28,6 +28,6 @@ version.txt
 # MacOS Files
 .DS_Store
 .java-version
+
 /Starter/.gradle/
 /Starter/build/
-/lib/

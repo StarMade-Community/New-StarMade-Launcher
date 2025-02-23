@@ -21,13 +21,13 @@ jobs:
         steps:
             -   name: 'Checkout'
                 uses: actions/checkout@v4
-            -   name: 'Setup GraalVM Environment'
-                uses: DeLaGuardo/setup-graalvm@2.0
+            -   name: 'Setup Java 21'
+                uses: graalvm/setup-graalvm@v1
                 with:
-                    graalvm-version: '21.0.2'
-            -   name: 'Install Native Image Plugin'
-                run: |
-                    gu install native-image
+                    java-version: 21
+                    distribution: 'graalvm'
+                    github-token: ${{ secrets.GITHUB_TOKEN }}
+                    native-image-job-reports: 'true'
             -   name: 'Build Jar'
                 run: |
                     ./gradlew package

@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'smlauncher'
 version = '3.1.7'
+
+application {
+    mainClassName = 'smlauncher.StarMadeStarter'
+}
 
 repositories {
     mavenCentral()
@@ -19,7 +24,6 @@ test {
 }
 
 jar {
-    dependsOn(clean)
     manifest {
         attributes 'Main-Class': 'smlauncher.StarMadeStarter'
     }
