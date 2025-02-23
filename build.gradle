@@ -36,9 +36,9 @@ dependencies {
 }
 
 var os = System.getProperty('os.name').toLowerCase()
-if (os.contains('win')) os = 'windows-latest'
-else if (os.contains('mac')) os = 'macos-latest'
-else os = 'ubuntu-latest'
+if (os.contains('win')) os = 'Windows'
+else if (os.contains('mac')) os = 'MacOS'
+else os = 'Linux'
 
 jar {
 	manifest {
