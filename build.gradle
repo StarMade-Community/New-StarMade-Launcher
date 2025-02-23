@@ -1,17 +1,16 @@
 plugins {
 	id "java"
 	id "application"
-	id "org.panteleyev.jpackageplugin" version "1.6.0"
 	id 'com.github.johnrengelman.shadow' version "8.1.1"
 }
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.1.6'
+version = '3.1.7'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(18)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -37,13 +36,9 @@ dependencies {
 }
 
 var os = System.getProperty('os.name').toLowerCase()
-if (os.contains('win')) {
-	os = 'windows'
-} else if (os.contains('mac')) {
-	os = 'macos'
-} else {
-	os = 'linux'
-}
+if (os.contains('win')) os = 'windows-latest'
+else if (os.contains('mac')) os = 'macos-latest'
+else os = 'ubuntu-latest'
 
 jar {
 	manifest {
@@ -53,85 +48,60 @@ jar {
 		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 	}
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-	archiveFileName = 'StarMade-Launcher.jar'
-	from(sourceSets.main.output)
-	from('resources/Updater.jar') {
-		into 'Updater.jar'
-	}
+	archiveFileName = 'StarMade Launcher.jar'
+	destinationDirectory = file('release-builds/' + os + '/StarMade-Launcher/lib')
 }
 
 clean {
 	delete 'release-builds'
 }
 
-jpackage {
-	dependsOn(clean, jar)
-	input = "./build/libs/"
-	destination = "./release-builds/" + os
-	mainJar = "StarMade-Launcher.jar"
-	mainClass = "smlauncher.StarMadeLauncher"
-	appName = "StarMade-Launcher"
-	appVersion = project.version.toString()
-	vendor = "Schine GmbH"
-	copyright = "Copyright (c) 2025 Schine GmbH"
-	runtimeImage = System.getProperty("java.home")
-	type = "app-image"
-	mac {
-		icon = "./src/main/resources/starmade.icns"
-	}
-	windows {
-		icon = "./src/main/resources/starmade.ico"
-	}
-	linux {
-		icon = "./src/main/resources/starmade.png"
-	}
-}
-
 tasks.register('package') {
-	dependsOn(jpackage)
+	dependsOn(clean, jar)
 	doLast {
 		delete fileTree('release-builds/' + os).matching {
 			include '**/*.ico'
 			include '**/*.icns'
 			include '**/*.png'
 		}
-		if (os == 'windows') {
+		if (os == 'windows-latest') {
 			copy {
 				from 'StarMade-dedicated-server-windows.bat'
 				into 'release-builds/' + os + '/StarMade-Launcher/'
 			}
 		}
-		if (os == 'macos') {
+		if (os == 'macos-latest') {
 			copy {
 				from 'StarMade-dedicated-server-macos.command'
 				into 'release-builds/' + os + '/StarMade-Launcher/'
 			}
-			exec {
-				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher.app', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-			}
-			
+//			exec {
+//				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher.app', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+//			}
+
 			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
 						commandLine 'chmod', '+x', details.file.absolutePath
+						commandLine 'codesign', '--sign', '-', '--force', '--deep', '--timestamp', details.file.absolutePath
 					}
 				}
 			}
-			
-			exec {
-				commandLine 'xattr', '-cr', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-			}
-			
-			exec {
-				commandLine 'codesign', '--sign', '-', '--force', '--deep', '--timestamp', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-			}
+
+//			exec {
+//				commandLine 'xattr', '-cr', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+//			}
+
+//			exec {
+//				commandLine 'codesign', '--sign', '-', '--force', '--deep', '--timestamp', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
+//			}
 		}
-		if (os == 'linux') {
+		if (os == 'ubuntu-latest') {
 			copy {
 				from 'StarMade-dedicated-server-linux.sh'
 				into 'release-builds/' + os + '/StarMade-Launcher/'
 			}
-			
+
 			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
@@ -139,10 +109,10 @@ tasks.register('package') {
 					}
 				}
 			}
-			
-			exec {
-				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher/bin/StarMade-Launcher', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
-			}
+
+//			exec {
+//				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher/bin/StarMade-Launcher', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
+//			}
 		}
-	}
+	}	
 }

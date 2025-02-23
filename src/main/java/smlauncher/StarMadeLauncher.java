@@ -188,7 +188,6 @@ public class StarMadeLauncher extends JFrame {
 			LaunchSettings.readSettings();
 			if(autoUpdate) {
 				if(headless) GameUpdater.withoutGUI(true, LaunchSettings.getInstallDir(), buildBranch, backupMode, selectVersion);
-				else LauncherUpdaterHelper.checkForUpdate();
 			}
 
 			if(headless) {
@@ -253,67 +252,11 @@ public class StarMadeLauncher extends JFrame {
 		EventQueue.invokeLater(() -> {
 			try {
 				FlatDarkLaf.setup();
-				if(LauncherUpdaterHelper.checkForUpdate()) {
-					System.err.println("Launcher version doesn't match latest version, so an update must be available.");
-					JDialog updateDialog = createLauncherUpdateDialog();
-					updateDialog.setVisible(true);
-				} else startLauncherFrame();
+				startLauncherFrame();
 			} catch(Exception exception) {
 				LogManager.logException("Failed to start launcher", exception);
 			}
 		});
-	}
-
-	private static JDialog createLauncherUpdateDialog() {
-		JDialog dialog = new JDialog();
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		dialog.setModal(true);
-		dialog.setResizable(false);
-		dialog.setTitle("Launcher Update Available");
-		dialog.setSize(500, 350);
-		dialog.setLocationRelativeTo(null);
-		dialog.setLayout(new BorderLayout());
-		dialog.setAlwaysOnTop(true);
-		dialog.setLayout(new BorderLayout());
-
-		JPanel descPanel = new JPanel();
-		descPanel.setDoubleBuffered(true);
-		descPanel.setOpaque(true);
-		descPanel.setLayout(new BoxLayout(descPanel, BoxLayout.Y_AXIS));
-		dialog.add(descPanel);
-
-		JLabel descLabel = new JLabel("A new launcher update is available, please update to continue.");
-		descLabel.setDoubleBuffered(true);
-		descLabel.setOpaque(true);
-		descLabel.setFont(new Font("Roboto", Font.BOLD, 16));
-		descPanel.add(descLabel);
-
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setDoubleBuffered(true);
-		buttonPanel.setOpaque(true);
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-		JButton updateButton = new JButton("Update");
-		updateButton.setDoubleBuffered(true);
-		updateButton.setOpaque(true);
-		updateButton.setFont(new Font("Roboto", Font.BOLD, 12));
-		updateButton.addActionListener(e -> {
-			dialog.dispose();
-			LauncherUpdaterHelper.updateLauncher();
-		});
-		buttonPanel.add(updateButton);
-
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setDoubleBuffered(true);
-		cancelButton.setOpaque(true);
-		cancelButton.setFont(new Font("Roboto", Font.BOLD, 12));
-		cancelButton.addActionListener(e -> {
-			dialog.dispose();
-			startLauncherFrame();
-		});
-		buttonPanel.add(cancelButton);
-		return dialog;
 	}
 
 	private static void startLauncherFrame() {

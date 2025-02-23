@@ -18,6 +18,12 @@ jobs:
                 uses: actions/setup-java@v1
                 with:
                     java-version: 18
+            -   name: 'Build Jar'
+                run: |
+                    ./gradlew package
+            -   name: 'Change Directory to ./Starter'
+                run: |
+                    cd Starter
             -   name: 'Build Executable'
                 run: |
                     ./gradlew package

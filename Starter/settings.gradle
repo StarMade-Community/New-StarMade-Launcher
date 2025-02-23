@@ -1,0 +1,10 @@
+pluginManagement {
+	repositories {
+		maven {
+			url "https://raw.githubusercontent.com/graalvm/native-build-tools/snapshots"
+		}
+		gradlePluginPortal()
+	}
+}
+
+include 'New-StarMade-Launcher'
