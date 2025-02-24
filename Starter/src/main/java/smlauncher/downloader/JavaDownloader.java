@@ -17,7 +17,6 @@ public class JavaDownloader {
 
 	private final OperatingSystem currentOS;
 	private final JavaVersion version;
-	private Thread downloadThread;
 	private boolean finished;
 
 	public JavaDownloader(JavaVersion version) {
@@ -33,7 +32,7 @@ public class JavaDownloader {
 	public void downloadAndUnzip() throws IOException {
 		// Don't unzip if the folder already exists
 		if(doesJreFolderExist()) return;
-		(downloadThread = new Thread(() -> {
+		(new Thread(() -> {
 			try {
 				download();
 				unzip();
@@ -41,6 +40,7 @@ public class JavaDownloader {
 				if(currentOS == OperatingSystem.LINUX || currentOS == OperatingSystem.MAC) (new File(getJreFolderName() + "/bin/java")).setExecutable(true);
 				else if(currentOS == OperatingSystem.WINDOWS) (new File(getJreFolderName() + "/bin/java.exe")).setExecutable(true);
 				else throw new IOException("Downloaded Java, but failed to mark it as executable due to unknown OS: " + currentOS);
+				cleanupZip();
 				finished = true;
 			} catch(Exception exception) {
 				exception.printStackTrace();
@@ -50,11 +50,8 @@ public class JavaDownloader {
 
 	public void download() throws IOException {
 		String url = getJavaURL();
-		if(url == null) return;
-
 		URL website = new URL(url);
 		ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-
 		String destination = getZipFilename();
 		FileOutputStream fos = new FileOutputStream(destination);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -64,17 +61,17 @@ public class JavaDownloader {
 
 	public void unzip() throws IOException {
 		String zipFilename = getZipFilename();
-
-		// Extract the file
+		//Extract the file
 		//We cant use UnArchiver, because GraalVM won't include it even though its in the fucking jar
-		//We have to do this the hard way using commands for each OS
+		//We have to do this the hard way using OS specific commands
 		ProcessBuilder processBuilder;
+		Process process = null;
 		switch(OperatingSystem.getCurrent()) {
 			case WINDOWS:
 				if(zipFilename.endsWith(".tar.gz")) throw new IOException("Cannot extract .tar.gz files on Windows"); //Why was it downloaded then?
 				else processBuilder = new ProcessBuilder("powershell.exe", "Expand-Archive", "-Path", zipFilename, "-DestinationPath", ".");
 				processBuilder.redirectErrorStream(true);
-				processBuilder.start();
+				process = processBuilder.start();
 				break;
 			case LINUX:
 			case SOLARIS:
@@ -82,13 +79,19 @@ public class JavaDownloader {
 				if(zipFilename.endsWith(".tar.gz")) processBuilder = new ProcessBuilder("tar", "-xzf", zipFilename);
 				else processBuilder = new ProcessBuilder("unzip", zipFilename);
 				processBuilder.redirectErrorStream(true);
-				processBuilder.start();
+				process = processBuilder.start();
 				break;
 			default:
 				throw new IOException("Unknown OS: " + OperatingSystem.getCurrent());
 		}
+		if(process != null) {
+			try {
+				process.waitFor();
+			} catch(InterruptedException exception) {
+				exception.printStackTrace();
+			}
+		}
 		
-		cleanupZip(); // Delete the zip file
 		moveExtractedFolder();
 		System.out.println("Unzipped " + zipFilename);
 		
@@ -112,7 +115,7 @@ public class JavaDownloader {
 		if(extractedFolder == null) throw new IOException("Could not find extracted folder");
 
 		// Rename the extracted folder to jre<#>/
-		if(!extractedFolder.renameTo(jreFolder)) throw new IOException("Could not rename extracted folder");
+		extractedFolder.renameTo(jreFolder);
 	}
 	
 	private boolean doesJreFolderExist() {
