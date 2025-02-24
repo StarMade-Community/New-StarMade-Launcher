@@ -24,7 +24,7 @@ public class StarMadeStarter {
 				if(!smFolder.exists()) smFolder.mkdirs();
 
 				//We have to download Java 18 to run the launcher and then execute a command as GraalVM doesn't support Java Swing
-				JavaDownloader javaDownloader = new JavaDownloader(JavaVersion.JAVA_18);
+				JavaDownloader javaDownloader = new JavaDownloader(JavaVersion.JAVA_21);
 				javaDownloader.downloadAndUnzip();
 				
 				String javaPath = javaDownloader.getJreFolderName() + "/bin/java";
