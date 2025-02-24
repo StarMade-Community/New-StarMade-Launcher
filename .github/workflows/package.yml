@@ -21,10 +21,10 @@ jobs:
         steps:
             -   name: 'Checkout'
                 uses: actions/checkout@v4
-            -   name: 'Setup Java 18'
+            -   name: 'Setup Java 21'
                 uses: graalvm/setup-graalvm@v1
                 with:
-                    java-version: 18
+                    java-version: 21
                     distribution: 'graalvm'
                     github-token: ${{ secrets.GITHUB_TOKEN }}
                     native-image-job-reports: 'true'
