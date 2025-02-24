@@ -64,21 +64,8 @@ tasks.register('package') {
 			include '**/*.icns'
 			include '**/*.png'
 		}
-		if (os == 'windows-latest') {
-			copy {
-				from 'StarMade-dedicated-server-windows.bat'
-				into 'release-builds/' + os + '/StarMade-Launcher/'
-			}
-		}
+		
 		if (os == 'macos-latest') {
-			copy {
-				from 'StarMade-dedicated-server-macos.command'
-				into 'release-builds/' + os + '/StarMade-Launcher/'
-			}
-//			exec {
-//				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher.app', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-//			}
-
 			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
@@ -87,21 +74,9 @@ tasks.register('package') {
 					}
 				}
 			}
-
-//			exec {
-//				commandLine 'xattr', '-cr', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-//			}
-
-//			exec {
-//				commandLine 'codesign', '--sign', '-', '--force', '--deep', '--timestamp', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher.app'
-//			}
 		}
+		
 		if (os == 'ubuntu-latest') {
-			copy {
-				from 'StarMade-dedicated-server-linux.sh'
-				into 'release-builds/' + os + '/StarMade-Launcher/'
-			}
-
 			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
@@ -109,10 +84,6 @@ tasks.register('package') {
 					}
 				}
 			}
-
-//			exec {
-//				commandLine 'mv', 'release-builds/' + os + '/StarMade-Launcher/bin/StarMade-Launcher', 'release-builds/' + os + '/StarMade-Launcher/StarMade-Launcher'
-//			}
 		}
 	}
 }

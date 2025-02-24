@@ -57,7 +57,7 @@ jobs:
             -   name: 'Code Signing (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
@@ -95,6 +95,15 @@ jobs:
             -   name: 'Set Version Number'
                 run: |
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
+            -   name: 'Copy Server Launch Script (Windows)'
+                run: |
+                    cp ./StarMade-dedicated-server-windows.bat ./release-builds/Windows/Starmade-Launcher/StarMade-dedicated-server-windows.bat
+            -   name: 'Copy Server Launch Script (Linux)'
+                run: |
+                    cp ./StarMade-dedicated-server-linux.sh ./release-builds/Linux/StarMade-Launcher/StarMade-dedicated-server-linux.sh
+            -   name: 'Copy Server Launch Script (MacOS)'
+                run: |
+                    cp ./StarMade-dedicated-server-macos.command ./release-builds/MacOS/StarMade-Launcher/StarMade-dedicated-server-macos.command
             -   name: 'Create Linux Archive'
                 run: |
                     zip -r StarMade-Launcher-Linux.zip ./release-builds/Linux/StarMade-Launcher
