@@ -33,7 +33,7 @@ jobs:
                     ./gradlew package
             -   name: 'Build Executable'
                 run: |
-                    native-image --no-server --no-fallback --allow-incomplete-classpath -jar ./lib/StarMade-Starter.jar
+                    native-image --bundle-create --no-server --no-fallback --allow-incomplete-classpath -jar ./lib/StarMade-Starter.jar
             -   name: 'List Files Recursively'
                 run: |
                     ls -R
