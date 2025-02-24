@@ -1,12 +1,10 @@
 package smlauncher.downloader;
 
-
 import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -130,8 +128,11 @@ public class JavaDownloader {
 	}
 
 	void cleanupZip() {
-		File zipFile = new File(getZipFilename());
-		if(zipFile.exists()) zipFile.delete();
+		for(File file : Objects.requireNonNull(new File("./").listFiles())) {
+			if(file.getName().endsWith(currentOS.zipExtension)) file.delete();
+		}
+//		File zipFile = new File(getZipFilename());
+//		if(zipFile.exists()) zipFile.delete();
 	}
 
 	void cleanupFolder() {
