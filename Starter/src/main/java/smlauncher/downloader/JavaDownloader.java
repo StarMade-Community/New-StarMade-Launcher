@@ -108,14 +108,8 @@ public class JavaDownloader {
 		// Find the extracted folder
 		for(File file : Objects.requireNonNull(new File("./").listFiles())) {
 			if(file.getName().startsWith(version.fileStart)) {
-				//For some reason, on Java 21 we have to go two folders deep
-				for(File subFile : Objects.requireNonNull(file.listFiles())) {
-					if(subFile.getName().startsWith(version.fileStart)) {
-						extractedFolder = subFile;
-						break;
-					}
-				}
-				if(extractedFolder != null) break;
+				extractedFolder = file;
+				break;
 			}
 		}
 		if(extractedFolder == null) throw new IOException("Could not find extracted folder");
