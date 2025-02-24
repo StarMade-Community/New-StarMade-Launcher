@@ -1,5 +1,9 @@
 package smlauncher;
 
+import smlauncher.downloader.JavaDownloader;
+import smlauncher.downloader.JavaVersion;
+import smlauncher.downloader.OperatingSystem;
+
 import java.io.File;
 
 /**
@@ -15,12 +19,18 @@ public class StarMadeStarter {
 			String launcherPath = "./lib/StarMade-Launcher.jar";
 			File launcher = new File(launcherPath);
 			if(launcher.exists()) {
-				if(!launcher.canExecute()) {
-					//Make the file executable
-					launcher.setExecutable(true);
-				}
-				//Start the launcher
-				ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", launcherPath, String.join(" ", args));
+				if(!launcher.canExecute()) launcher.setExecutable(true);
+				File smFolder = new File("./StarMade");
+				if(!smFolder.exists()) smFolder.mkdirs();
+
+				//We have to download Java 18 to run the launcher and then execute a command as GraalVM doesn't support Java Swing
+				JavaDownloader javaDownloader = new JavaDownloader(JavaVersion.JAVA_18);
+				javaDownloader.downloadAndUnzip();
+				
+				String javaPath = javaDownloader.getJreFolderName() + "/bin/java";
+				if(OperatingSystem.getCurrent() == OperatingSystem.WINDOWS) javaPath += ".exe";
+				
+				ProcessBuilder processBuilder = new ProcessBuilder(javaPath, "-jar", launcherPath, String.join(" ", args));
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.start();

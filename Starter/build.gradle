@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version "8.1.1"
 }
 
 group = 'smlauncher'
@@ -18,11 +19,13 @@ application {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url "https://plugins.gradle.org/m2/" }
+    gradlePluginPortal()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.codehaus.plexus:plexus-archiver:4.10.0'
 }
 
 test {

@@ -111,10 +111,6 @@ public class StarMadeLauncher extends JFrame {
 
 		LaunchSettings.saveSettings();
 
-		// Delete updater jar (in case launcher was updated)
-		File updaterJar = new File("Updater.jar");
-		if(updaterJar.exists()) updaterJar.delete();
-
 		// Get the current OS
 		currentOS = OperatingSystem.getCurrent();
 
