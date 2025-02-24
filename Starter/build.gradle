@@ -19,17 +19,10 @@ application {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url "https://plugins.gradle.org/m2/" }
-    gradlePluginPortal()
 }
 
 dependencies {
     implementation 'org.codehaus.plexus:plexus-archiver:4.10.0'
-}
-
-test {
-    useJUnitPlatform()
 }
 
 jar {
@@ -37,7 +30,9 @@ jar {
         attributes 'Main-Class': 'smlauncher.StarMadeStarter'
     }
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect {
+            if(it.name.containsIgnoreCase('plexus')) zipTree(it)
+        }
     }
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     archiveFileName = 'StarMade-Starter.jar'
