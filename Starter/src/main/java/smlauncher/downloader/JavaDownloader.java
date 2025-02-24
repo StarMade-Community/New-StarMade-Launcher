@@ -65,7 +65,7 @@ public class JavaDownloader {
 		//We cant use UnArchiver, because GraalVM won't include it even though its in the fucking jar
 		//We have to do this the hard way using OS specific commands
 		ProcessBuilder processBuilder;
-		Process process = null;
+		Process process;
 		switch(OperatingSystem.getCurrent()) {
 			case WINDOWS:
 				if(zipFilename.endsWith(".tar.gz")) throw new IOException("Cannot extract .tar.gz files on Windows"); //Why was it downloaded then?
@@ -108,13 +108,19 @@ public class JavaDownloader {
 		// Find the extracted folder
 		for(File file : Objects.requireNonNull(new File("./").listFiles())) {
 			if(file.getName().startsWith(version.fileStart)) {
-				extractedFolder = file;
-				break;
+				//For some reason, on Java 21 we have to go two folders deep
+				for(File subFile : Objects.requireNonNull(file.listFiles())) {
+					if(subFile.getName().startsWith(version.fileStart)) {
+						extractedFolder = subFile;
+						break;
+					}
+				}
+				if(extractedFolder != null) break;
 			}
 		}
 		if(extractedFolder == null) throw new IOException("Could not find extracted folder");
 
-		// Rename the extracted folder to jre<#>/
+		// Rename the extracted folder to jre<#>
 		extractedFolder.renameTo(jreFolder);
 	}
 	
