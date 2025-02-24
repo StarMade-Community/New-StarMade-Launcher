@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version "8.1.1"
+//    id 'com.github.johnrengelman.shadow' version "8.1.1"
 }
 
 group = 'smlauncher'
@@ -22,18 +22,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.plexus:plexus-archiver:4.10.0'
+//    implementation 'org.codehaus.plexus:plexus-archiver:4.10.0'
 }
 
 jar {
     manifest {
         attributes 'Main-Class': 'smlauncher.StarMadeStarter'
     }
-    from {
-        configurations.runtimeClasspath.collect {
-            if(it.name.containsIgnoreCase('plexus')) zipTree(it)
-        }
-    }
+//    from {
+//        configurations.runtimeClasspath.collect {
+//            if(it.name.containsIgnoreCase('plexus')) zipTree(it)
+//        }
+//    }
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     archiveFileName = 'StarMade-Starter.jar'
     destinationDirectory = file('../lib/')

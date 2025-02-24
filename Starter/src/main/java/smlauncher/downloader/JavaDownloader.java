@@ -1,10 +1,5 @@
 package smlauncher.downloader;
 
-import org.apache.commons.io.FileUtils;
-import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,18 +64,30 @@ public class JavaDownloader {
 
 	public void unzip() throws IOException {
 		String zipFilename = getZipFilename();
-		File zipFile = new File(zipFilename);
 
 		// Extract the file
-		UnArchiver unzipper;
-		if("zip".equals(currentOS.zipExtension)) {
-			unzipper = new ZipUnArchiver(zipFile);
-		} else {
-			unzipper = new TarGZipUnArchiver(zipFile);
+		//We cant use UnArchiver, because GraalVM won't include it even though its in the fucking jar
+		//We have to do this the hard way using commands for each OS
+		ProcessBuilder processBuilder;
+		switch(OperatingSystem.getCurrent()) {
+			case WINDOWS:
+				if(zipFilename.endsWith(".tar.gz")) throw new IOException("Cannot extract .tar.gz files on Windows"); //Why was it downloaded then?
+				else processBuilder = new ProcessBuilder("powershell.exe", "Expand-Archive", "-Path", zipFilename, "-DestinationPath", ".");
+				processBuilder.redirectErrorStream(true);
+				processBuilder.start();
+				break;
+			case LINUX:
+			case SOLARIS:
+			case MAC:
+				if(zipFilename.endsWith(".tar.gz")) processBuilder = new ProcessBuilder("tar", "-xzf", zipFilename);
+				else processBuilder = new ProcessBuilder("unzip", zipFilename);
+				processBuilder.redirectErrorStream(true);
+				processBuilder.start();
+				break;
+			default:
+				throw new IOException("Unknown OS: " + OperatingSystem.getCurrent());
 		}
-		unzipper.setDestDirectory(new File("./"));
-		unzipper.extract();
-
+		
 		cleanupZip(); // Delete the zip file
 		moveExtractedFolder();
 		System.out.println("Unzipped " + zipFilename);
@@ -105,11 +112,9 @@ public class JavaDownloader {
 		if(extractedFolder == null) throw new IOException("Could not find extracted folder");
 
 		// Rename the extracted folder to jre<#>/
-		FileUtils.moveDirectory(extractedFolder, jreFolder);
+		if(!extractedFolder.renameTo(jreFolder)) throw new IOException("Could not rename extracted folder");
 	}
-
-	// Helper Methods
-
+	
 	private boolean doesJreFolderExist() {
 		File jreFolder = new File(getJreFolderName());
 		return jreFolder.isDirectory();
@@ -131,23 +136,6 @@ public class JavaDownloader {
 		for(File file : Objects.requireNonNull(new File("./").listFiles())) {
 			if(file.getName().endsWith(currentOS.zipExtension)) file.delete();
 		}
-//		File zipFile = new File(getZipFilename());
-//		if(zipFile.exists()) zipFile.delete();
-	}
-
-	void cleanupFolder() {
-		File jreFolder = new File(getJreFolderName());
-		try {
-			if(jreFolder.exists()) {
-				FileUtils.cleanDirectory(jreFolder);
-				FileUtils.deleteDirectory(jreFolder);
-			}
-		} catch(IOException ignored) {
-		}
-	}
-
-	public void forceStopThread() {
-		if(downloadThread != null) downloadThread.interrupt();
 	}
 
 	public boolean isDownloaded() {

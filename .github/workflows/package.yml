@@ -33,7 +33,7 @@ jobs:
                     ./gradlew package
             -   name: 'Build Executable'
                 run: |
-                    native-image --no-server --no-fallback --allow-incomplete-classpath --enable-url-protocols=https --initialize-at-build-time=org.codehaus.plexus.archiver.zip.ZipUnArchiver --initialize-at-build-time=org.codehaus.plexus.archiver.tar.TarGZipUnArchiver -jar ./lib/StarMade-Starter.jar
+                    native-image --no-server --no-fallback --allow-incomplete-classpath --enable-url-protocols=https -jar ./lib/StarMade-Starter.jar
             -   name: 'Rename to StarMade-Launcher (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
