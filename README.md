@@ -6,6 +6,7 @@ The launcher can also automatically download and install the correct Java versio
 use Java 8, while versions 0.300.100 and above use Java 18.
 This launcher was created due to the old one being outdated and only being able to use Java 7.
 
+
 # Running a Server
 
 1. Command
