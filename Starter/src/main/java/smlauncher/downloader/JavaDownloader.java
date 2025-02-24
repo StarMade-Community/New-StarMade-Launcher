@@ -25,6 +25,7 @@ public class JavaDownloader {
 	private final OperatingSystem currentOS;
 	private final JavaVersion version;
 	private Thread downloadThread;
+	private boolean finished;
 
 	public JavaDownloader(JavaVersion version) {
 		this(OperatingSystem.getCurrent(), version);
@@ -47,7 +48,8 @@ public class JavaDownloader {
 				if(currentOS == OperatingSystem.LINUX || currentOS == OperatingSystem.MAC) (new File(getJreFolderName() + "/bin/java")).setExecutable(true);
 				else if(currentOS == OperatingSystem.WINDOWS) (new File(getJreFolderName() + "/bin/java.exe")).setExecutable(true);
 				else throw new IOException("Downloaded Java, but failed to mark it as executable due to unknown OS: " + currentOS);
-			} catch(IOException exception) {
+				finished = true;
+			} catch(Exception exception) {
 				exception.printStackTrace();
 			}
 		})).start();
@@ -145,5 +147,9 @@ public class JavaDownloader {
 
 	public void forceStopThread() {
 		if(downloadThread != null) downloadThread.interrupt();
+	}
+
+	public boolean isDownloaded() {
+		return doesJreFolderExist() && finished;
 	}
 }
