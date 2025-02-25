@@ -34,7 +34,6 @@ public class LauncherNewsPanel extends JPanel {
 		htmlPanel.setBackground(Palette.paneColor);
 		htmlPanel.setOpaque(true);
 		htmlPanel.setEditable(false);
-		htmlPanel.setContentType("text/html");
 		StringBuilder sb = new StringBuilder();
 		for(SteamNewsAPI.NewsPost post : SteamNewsAPI.getPosts()) {
 			ArrayList<String> lines = BBCodeToHTMLConverter.convert(post.getContents());

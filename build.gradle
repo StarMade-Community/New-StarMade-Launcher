@@ -6,7 +6,7 @@ plugins {
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.1.7'
+version = '3.1.8'
 
 java {
 	toolchain {

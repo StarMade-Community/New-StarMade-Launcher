@@ -72,12 +72,6 @@ public class StarMadeLauncher extends JFrame {
 		super("StarMade Launcher [" + LAUNCHER_VERSION + "]");
 		Thread.currentThread().setUncaughtExceptionHandler((t, e) -> LogManager.logFatal("Encountered an unexpected error \"" + e.getClass().getSimpleName() + "\"", e));
 
-		// If on mac, change cwd to outside the .app
-		if(OperatingSystem.getCurrent() == OperatingSystem.MAC) {
-			String cwd = System.getProperty("user.dir");
-			if(cwd.contains("StarMade-Launcher.app/Contents/app")) System.setProperty("user.dir", cwd.replace("StarMade-Launcher.app/Contents/app", ""));
-		}
-
 		setBounds(100, 100, 800, 550);
 		setMinimumSize(new Dimension(800, 550));
 		setLocationRelativeTo(null);
