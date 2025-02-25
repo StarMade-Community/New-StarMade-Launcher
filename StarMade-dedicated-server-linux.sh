@@ -5,4 +5,4 @@ if [ ! -d "./StarMade" ]; then
     echo "The launcher will create the necessary folders and files for the server to run."
     exit 1
 fi
-java -jar ./lib/StarMade-Launcher.jar -server -port: 4242
+java -jar ./StarMade-Launcher.jar -server -port: 4242

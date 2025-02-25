@@ -4,4 +4,4 @@ IF NOT EXIST "./StarMade" (
 	PAUSE
 	EXIT
 )
-java -jar ./lib/StarMade-Launcher.jar -server -port: 4242
+java -jar ./StarMade-Launcher.jar -server -port: 4242
