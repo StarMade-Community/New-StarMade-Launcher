@@ -36,5 +36,5 @@ jar {
 //    }
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     archiveFileName = 'StarMade-Starter.jar'
-    destinationDirectory = file('../lib/')
+    destinationDirectory = file('../')
 }
