@@ -91,29 +91,23 @@ jobs:
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Linux
+                    path: StarMade-Launcher-Linux
                     merge-multiple: true
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Windows
+                    path: StarMade-Launcher-Windows
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-MacOS
+                    path: StarMade-Launcher-MacOS
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
-            -   name: 'Copy Server Launch Script (Windows)'
-                run: |
-                    cp StarMade-dedicated-server-windows.bat StarMade-Launcher-Windows/StarMade-dedicated-server-windows.bat
-            -   name: 'Copy Server Launch Script (Linux)'
-                run: |
-                    cp StarMade-dedicated-server-linux.sh StarMade-Launcher-Linux/StarMade-dedicated-server-linux.sh
-            -   name: 'Copy Server Launch Script (MacOS)'
-                run: |
-                    cp StarMade-dedicated-server-macos.command StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
             -   name: 'Create Launcher Directory (Windows)'
                 run: |
                     mkdir StarMade-Launcher-Windows/StarMade
@@ -123,6 +117,15 @@ jobs:
             -   name: 'Create Launcher Directory (MacOS)'
                 run: |
                     mkdir StarMade-Launcher-MacOS/StarMade
+            -   name: 'Copy Server Launch Script (Windows)'
+                run: |
+                    cp StarMade-dedicated-server-windows.bat StarMade-Launcher-Windows/StarMade-dedicated-server-windows.bat
+            -   name: 'Copy Server Launch Script (Linux)'
+                run: |
+                    cp StarMade-dedicated-server-linux.sh StarMade-Launcher-Linux/StarMade-dedicated-server-linux.sh
+            -   name: 'Copy Server Launch Script (MacOS)'
+                run: |
+                    cp StarMade-dedicated-server-macos.command StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
             -   name: 'Copy Launcher Jar (Windows)'
                 run: |
                     cp StarMade-Starter.jar StarMade-Launcher-Windows/StarMade-Launcher.jar
