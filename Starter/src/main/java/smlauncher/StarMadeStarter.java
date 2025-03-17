@@ -20,8 +20,9 @@ public class StarMadeStarter {
 				File smFolder = new File("./StarMade");
 				if(!smFolder.exists()) smFolder.mkdirs();
 				
-				String javaPath = "jre23/bin/java";
+				String javaPath = "./jre23/bin/java";
 				if(OperatingSystem.getCurrent() == OperatingSystem.WINDOWS) javaPath += ".exe";
+				else if(OperatingSystem.getCurrent() == OperatingSystem.MAC) javaPath = "./jre23/Contents/Home/bin/java";
 				
 				ProcessBuilder processBuilder = new ProcessBuilder(javaPath, "-jar", launcherPath, String.join(" ", args));
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
