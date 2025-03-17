@@ -1,6 +1,0 @@
-java/Linux/jre8.zip filter=lfs diff=lfs merge=lfs -text
-java/Linux/jre23.zip filter=lfs diff=lfs merge=lfs -text
-java/MacOS/jre8.zip filter=lfs diff=lfs merge=lfs -text
-java/MacOS/jre23.zip filter=lfs diff=lfs merge=lfs -text
-java/Windows/jre8.zip filter=lfs diff=lfs merge=lfs -text
-java/Windows/jre23.zip filter=lfs diff=lfs merge=lfs -text
