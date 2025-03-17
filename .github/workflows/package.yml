@@ -119,13 +119,13 @@ jobs:
                     cp StarMade-dedicated-server-macos.command ./StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
             -   name: 'Create Launcher Directory (Windows)'
                 run: |
-                    mkdirs ./StarMade-Launcher-Windows/StarMade
+                    mkdir ./StarMade-Launcher-Windows/StarMade
             -   name: 'Create Launcher Directory (Linux)'
                 run: |
-                    mkdirs ./StarMade-Launcher-Linux/StarMade
+                    mkdir ./StarMade-Launcher-Linux/StarMade
             -   name: 'Create Launcher Directory (MacOS)'
                 run: |
-                    mkdirs ./StarMade-Launcher-MacOS/StarMade
+                    mkdir ./StarMade-Launcher-MacOS/StarMade
             -   name: 'Unzip JRE8 (Windows)'
                 run: |
                     unzip -o ./java/Windows/jre8.zip -d ./StarMade-Launcher-Windows/StarMade
