@@ -39,8 +39,8 @@ public class StarMadeLauncher extends JFrame {
 
 	public static final String DOWNLOAD_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/releases";
 	public static final String BUG_REPORT_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/issues";
-	public static final String LAUNCHER_VERSION = "3.1.5"; //This is dumb, why are we hardcoding this
-	private static final String[] J18ARGS = {"--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED", "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED", "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED", "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED", "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED", "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED", "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED", "--add-opens=java.base/java.io=ALL-UNNAMED", "--add-opens=java.base/java.util=ALL-UNNAMED"};
+	public static final String LAUNCHER_VERSION = "3.1.10"; //This is dumb, why are we hardcoding this
+	private static final String[] J23ARGS = {"--add-opens java.base/jdk.internal.misc=ALL-UNNAMED"};
 	private static IndexFileEntry gameVersion;
 	private static GameBranch lastUsedBranch = GameBranch.RELEASE;
 	private static boolean debugMode;
@@ -107,15 +107,6 @@ public class StarMadeLauncher extends JFrame {
 
 		// Get the current OS
 		currentOS = OperatingSystem.getCurrent();
-
-		// Download JREs
-		try {
-			downloadJRE(JavaVersion.JAVA_8);
-			downloadJRE(JavaVersion.JAVA_18);
-		} catch(Exception exception) {
-			LogManager.logException("Failed to download Java Runtimes for first time setup", exception);
-			JOptionPane.showMessageDialog(this, "Failed to download Java Runtimes for first time setup. Please make sure you have a stable internet connection and try again.", "Error", JOptionPane.ERROR_MESSAGE);
-		}
 
 		// Create launcher UI
 		createMainPanel();
@@ -194,7 +185,7 @@ public class StarMadeLauncher extends JFrame {
 						gameVersion = new VersionRegistry().getLatestVersion(GameBranch.RELEASE);
 					}
 					setGameVersion(gameVersion);
-				} else if(!gameVersion.version.startsWith("0.2") && !gameVersion.version.startsWith("0.1")) javaVersion = JavaVersion.JAVA_18;
+				} else if(!gameVersion.version.startsWith("0.2") && !gameVersion.version.startsWith("0.1")) javaVersion = JavaVersion.JAVA_23;
 				setGameVersion(gameVersion);
 				System.out.println("Using game version " + gameVersion.version + " on branch " + gameVersion.branch + " with Java " + javaVersion);
 				if(serverMode) startServerHeadless();
@@ -446,11 +437,11 @@ public class StarMadeLauncher extends JFrame {
 
 	public static ArrayList<String> getCommandComponents(boolean server) {
 		boolean useJava8 = gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1");
-		String bundledJavaPath = new File(useJava8 ? getJavaPath(JavaVersion.JAVA_8) : getJavaPath(JavaVersion.JAVA_18)).getAbsolutePath();
+		String bundledJavaPath = new File(useJava8 ? getJavaPath(JavaVersion.JAVA_8) : getJavaPath(JavaVersion.JAVA_23)).getAbsolutePath();
 
 		ArrayList<String> commandComponents = new ArrayList<>();
 		commandComponents.add(bundledJavaPath);
-		if(!useJava8) commandComponents.addAll(Arrays.asList(J18ARGS));
+		if(!useJava8) commandComponents.addAll(Arrays.asList(J23ARGS));
 
 		if(currentOS == OperatingSystem.MAC) {
 			// Run OpenGL on main thread on macOS
@@ -1096,7 +1087,7 @@ public class StarMadeLauncher extends JFrame {
 		playPanelButtonsSub.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		playPanelButtons.add(playPanelButtonsSub, BorderLayout.SOUTH);
 
-		if((repair || !gameJarExists(LaunchSettings.getInstallDir()) || gameVersion == null || !Objects.equals(gameVersion.version, selectedVersion)) && !debugMode) {
+		if((repair || !gameJarExists(LaunchSettings.getInstallDir()) || gameVersion == null || (!Objects.equals(gameVersion.version, selectedVersion) && selectedVersion != null)) && !debugMode) {
 			updateButton = new JButton(getIcon("sprites/update_btn.png"));
 			updateButton.setDoubleBuffered(true);
 			updateButton.setOpaque(false);
@@ -1133,13 +1124,6 @@ public class StarMadeLauncher extends JFrame {
 				dispose();
 				LaunchSettings.setLastUsedVersion(gameVersion.version);
 				LaunchSettings.saveSettings();
-				try {
-					if(usingOldVersion()) downloadJRE(JavaVersion.JAVA_8);
-					else downloadJRE(JavaVersion.JAVA_18);
-				} catch(Exception exception) {
-					LogManager.logException("Failed to download java, will require manual installation", exception);
-					return;
-				}
 				runStarMade(serverMode);
 				System.exit(0);
 			});
@@ -1418,5 +1402,4 @@ public class StarMadeLauncher extends JFrame {
 	private boolean gameJarExists(String installDir) {
 		return (new File(installDir + "/StarMade.jar")).exists();
 	}
-
 }

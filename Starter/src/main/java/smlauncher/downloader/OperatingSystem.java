@@ -12,10 +12,10 @@ import java.util.Locale;
  */
 public enum OperatingSystem {
 
-	LINUX(new String[]{"linux", "unix"}, "tar.gz", "jre%d/bin/java"),
-	SOLARIS(new String[]{"sunos", "solaris"}, "tar.gz", "jre%d/bin/java"),
-	MAC(new String[]{"mac"}, "tar.gz", "jre%d/Contents/Home/bin/java"),
-	WINDOWS(new String[]{"win"}, "zip", "jre%d/bin/java.exe"),
+	LINUX(new String[]{"linux", "unix"}, "tar.gz", "jre23/bin/java"),
+	SOLARIS(new String[]{"sunos", "solaris"}, "tar.gz", "jre23/bin/java"),
+	MAC(new String[]{"mac"}, "tar.gz", "jre23/Contents/Home/bin/java"),
+	WINDOWS(new String[]{"win"}, "zip", "jre23/bin/java.exe"),
 	UNKNOWN(new String[0], null, null);
 
 	// Instance

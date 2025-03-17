@@ -21,10 +21,10 @@ jobs:
         steps:
             -   name: 'Checkout'
                 uses: actions/checkout@v4
-            -   name: 'Setup Java 21'
+            -   name: 'Setup Java 23'
                 uses: graalvm/setup-graalvm@v1
                 with:
-                    java-version: 21
+                    java-version: 23
                     distribution: 'graalvm'
                     github-token: ${{ secrets.GITHUB_TOKEN }}
                     native-image-job-reports: 'true'
@@ -37,32 +37,32 @@ jobs:
             -   name: 'Rename to StarMade-Launcher (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
+                    mv ./StarMade-Starter ./StarMade-Launcher
             -   name: 'Rename to StarMade-Launcher (Windows)'
                 if: ${{ matrix.os == 'windows-latest' }}
                 run: |
-                    mv ./StarMade-Starter.exe ./release-builds/Windows/StarMade-Launcher/StarMade-Launcher.exe
+                    mv ./StarMade-Starter.exe ./StarMade-Launcher.exe
             -   name: 'Rename to StarMade-Launcher (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    mv ./StarMade-Starter ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    mv ./StarMade-Starter ./StarMade-Launcher
             -   name: 'Mark as Executable (Linux)'
                 if: ${{ matrix.os == 'ubuntu-latest' }}
                 run: |
-                    chmod +x ./release-builds/Linux/StarMade-Launcher/StarMade-Launcher
+                    chmod +x ./StarMade-Launcher
             -   name: 'Mark as Executable (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    chmod +x ./release-builds/MacOS/StarMade-Launcher/StarMade-Launcher
+                    chmod +x ./StarMade-Launcher
             -   name: 'Code Signing (MacOS)'
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
-                    codesign --force --deep --sign - ./release-builds/MacOS/StarMade-Launcher
+                    codesign --force --deep --sign - ./StarMade-Launcher
             -   name: 'Upload Build Artifacts'
                 uses: actions/upload-artifact@v4
                 with:
                     name: StarMade-Launcher-${{ matrix.label }}
-                    path: ./release-builds
+                    path: ./StarMade-Launcher
     publish-executables:
         name: 'Publish Executables'
         runs-on: ubuntu-latest
@@ -78,41 +78,59 @@ jobs:
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Linux
-                    path: ./release-builds
+                    path: StarMade-Launcher-Linux
                     merge-multiple: true
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Windows
-                    path: ./release-builds
+                    path: StarMade-Launcher-Windows
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-MacOS
-                    path: ./release-builds
+                    path: StarMade-Launcher-MacOS
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
             -   name: 'Copy Server Launch Script (Windows)'
                 run: |
-                    cp StarMade-dedicated-server-windows.bat ./release-builds/Windows/StarMade-Launcher/StarMade-dedicated-server-windows.bat
+                    cp StarMade-dedicated-server-windows.bat ./StarMade-Launcher-Windows/StarMade-dedicated-server-windows.bat
             -   name: 'Copy Server Launch Script (Linux)'
                 run: |
-                    cp StarMade-dedicated-server-linux.sh ./release-builds/Linux/StarMade-Launcher/StarMade-dedicated-server-linux.sh
+                    cp StarMade-dedicated-server-linux.sh ./StarMade-Launcher-Linux/StarMade-dedicated-server-linux.sh
             -   name: 'Copy Server Launch Script (MacOS)'
                 run: |
-                    cp StarMade-dedicated-server-macos.command ./release-builds/MacOS/StarMade-Launcher/StarMade-dedicated-server-macos.command
+                    cp StarMade-dedicated-server-macos.command ./StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
+            -   name: 'Unzip JRE8 (Windows)'
+                run: |
+                    unzip -o ./java/Windows/jre8.zip -d ./StarMade-Launcher-Windows/StarMade
+            -   name: 'Unzip JRE8 (Linux)'
+                run: |
+                    unzip -o ./java/Linux/jre8.zip -d ./StarMade-Launcher-Linux/StarMade
+            -   name: 'Unzip JRE8 (MacOS)'
+                run: |
+                    unzip -o ./java/MacOS/jre8.zip -d ./StarMade-Launcher-MacOS/StarMade
+            -   name: 'Unzip JRE23 (Windows)'
+                run: |
+                    unzip -o ./java/Windows/jre23.zip -d ./StarMade-Launcher-Windows/StarMade
+            -   name: 'Unzip JRE23 (Linux)'
+                run: |
+                    unzip -o ./java/Linux/jre23.zip -d ./StarMade-Launcher-Linux/StarMade
+            -   name: 'Unzip JRE23 (MacOS)'
+                run: |
+                    unzip -o ./java/MacOS/jre23.zip -d ./StarMade-Launcher-MacOS/StarMade
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r StarMade-Launcher-Linux.zip ./release-builds/Linux/StarMade-Launcher
+                    zip -r StarMade-Launcher-Linux.zip ./StarMade-Launcher-Linux
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r StarMade-Launcher-Windows.zip ./release-builds/Windows/StarMade-Launcher
+                    zip -r StarMade-Launcher-Windows.zip ./StarMade-Launcher-Windows
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r StarMade-Launcher-MacOS.zip ./release-builds/MacOS/StarMade-Launcher
+                    zip -r StarMade-Launcher-MacOS.zip ./StarMade-Launcher-MacOS
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1

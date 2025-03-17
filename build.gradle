@@ -6,11 +6,11 @@ plugins {
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.1.9'
+version = '3.1.10'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(23)
 	}
 }
 
@@ -59,14 +59,18 @@ clean {
 tasks.register('package') {
 	dependsOn(clean, jar)
 	doLast {
-		delete fileTree('release-builds/' + os).matching {
-			include '**/*.ico'
-			include '**/*.icns'
-			include '**/*.png'
+		copy {
+			from './java/' + os + '/jre8'
+			into './StarMade-Launcher/StarMade/jre8'
 		}
 		
-		if (os == 'macos-latest') {
-			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
+		copy {
+			from './java/' + os + '/jre23'
+			into './StarMade-Launcher/StarMade/jre23'
+		}
+		
+		if (os == 'MacOS') {
+			fileTree('./StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
 						commandLine 'chmod', '+x', details.file.absolutePath
@@ -76,8 +80,8 @@ tasks.register('package') {
 			}
 		}
 		
-		if (os == 'ubuntu-latest') {
-			fileTree('release-builds/' + os + '/StarMade-Launcher').visit { FileVisitDetails details ->
+		if (os == 'Linux') {
+			fileTree('./StarMade-Launcher').visit { FileVisitDetails details ->
 				if (details.file.isFile()) {
 					exec {
 						commandLine 'chmod', '+x', details.file.absolutePath

@@ -1,9 +1,6 @@
 package smlauncher;
 
-import smlauncher.downloader.JavaDownloader;
-import smlauncher.downloader.JavaVersion;
 import smlauncher.downloader.OperatingSystem;
-
 import java.io.File;
 
 /**
@@ -22,13 +19,8 @@ public class StarMadeStarter {
 				if(!launcher.canExecute()) launcher.setExecutable(true);
 				File smFolder = new File("./StarMade");
 				if(!smFolder.exists()) smFolder.mkdirs();
-
-				//We have to download Java 21 to run the launcher and then execute a command as GraalVM doesn't support Java Swing
-				JavaDownloader javaDownloader = new JavaDownloader(JavaVersion.JAVA_21);
-				javaDownloader.downloadAndUnzip();
-				while(!javaDownloader.isDownloaded()) Thread.sleep(1000);
 				
-				String javaPath = javaDownloader.getJreFolderName() + "/bin/java";
+				String javaPath = "jre23/bin/java";
 				if(OperatingSystem.getCurrent() == OperatingSystem.WINDOWS) javaPath += ".exe";
 				
 				ProcessBuilder processBuilder = new ProcessBuilder(javaPath, "-jar", launcherPath, String.join(" ", args));
