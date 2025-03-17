@@ -110,49 +110,52 @@ jobs:
                     echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
             -   name: 'Copy Server Launch Script (Windows)'
                 run: |
-                    cp StarMade-dedicated-server-windows.bat ./StarMade-Launcher-Windows/StarMade-dedicated-server-windows.bat
+                    cp StarMade-dedicated-server-windows.bat StarMade-Launcher-Windows/StarMade-dedicated-server-windows.bat
             -   name: 'Copy Server Launch Script (Linux)'
                 run: |
-                    cp StarMade-dedicated-server-linux.sh ./StarMade-Launcher-Linux/StarMade-dedicated-server-linux.sh
+                    cp StarMade-dedicated-server-linux.sh StarMade-Launcher-Linux/StarMade-dedicated-server-linux.sh
             -   name: 'Copy Server Launch Script (MacOS)'
                 run: |
-                    cp StarMade-dedicated-server-macos.command ./StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
+                    cp StarMade-dedicated-server-macos.command StarMade-Launcher-MacOS/StarMade-dedicated-server-macos.command
             -   name: 'Create Launcher Directory (Windows)'
                 run: |
-                    mkdir ./StarMade-Launcher-Windows/StarMade
+                    mkdir StarMade-Launcher-Windows/StarMade
             -   name: 'Create Launcher Directory (Linux)'
                 run: |
-                    mkdir ./StarMade-Launcher-Linux/StarMade
+                    mkdir StarMade-Launcher-Linux/StarMade
             -   name: 'Create Launcher Directory (MacOS)'
                 run: |
-                    mkdir ./StarMade-Launcher-MacOS/StarMade
+                    mkdir StarMade-Launcher-MacOS/StarMade
+            -   name: 'List Files'
+                run: |
+                    ls -la ./
             -   name: 'Unzip JRE8 (Windows)'
                 run: |
-                    unzip -o ./java/Windows/jre8.zip -d ./StarMade-Launcher-Windows/StarMade
+                    unzip -o java/Windows/jre8.zip -d StarMade-Launcher-Windows/StarMade
             -   name: 'Unzip JRE8 (Linux)'
                 run: |
-                    unzip -o ./java/Linux/jre8.zip -d ./StarMade-Launcher-Linux/StarMade
+                    unzip -o java/Linux/jre8.zip -d StarMade-Launcher-Linux/StarMade
             -   name: 'Unzip JRE8 (MacOS)'
                 run: |
-                    unzip -o ./java/MacOS/jre8.zip -d ./StarMade-Launcher-MacOS/StarMade
+                    unzip -o java/MacOS/jre8.zip -d StarMade-Launcher-MacOS/StarMade
             -   name: 'Unzip JRE23 (Windows)'
                 run: |
-                    unzip -o ./java/Windows/jre23.zip -d ./StarMade-Launcher-Windows/StarMade
+                    unzip -o java/Windows/jre23.zip -d StarMade-Launcher-Windows/StarMade
             -   name: 'Unzip JRE23 (Linux)'
                 run: |
-                    unzip -o ./java/Linux/jre23.zip -d ./StarMade-Launcher-Linux/StarMade
+                    unzip -o java/Linux/jre23.zip -d StarMade-Launcher-Linux/StarMade
             -   name: 'Unzip JRE23 (MacOS)'
                 run: |
-                    unzip -o ./java/MacOS/jre23.zip -d ./StarMade-Launcher-MacOS/StarMade
+                    unzip -o java/MacOS/jre23.zip -d StarMade-Launcher-MacOS/StarMade
             -   name: 'Create Linux Archive'
                 run: |
-                    zip -r StarMade-Launcher-Linux.zip ./StarMade-Launcher-Linux
+                    zip -r StarMade-Launcher-Linux.zip StarMade-Launcher-Linux
             -   name: 'Create Windows Archive'
                 run: |
-                    zip -r StarMade-Launcher-Windows.zip ./StarMade-Launcher-Windows
+                    zip -r StarMade-Launcher-Windows.zip StarMade-Launcher-Windows
             -   name: 'Create MacOS Archive'
                 run: |
-                    zip -r StarMade-Launcher-MacOS.zip ./StarMade-Launcher-MacOS
+                    zip -r StarMade-Launcher-MacOS.zip StarMade-Launcher-MacOS
             -   name: 'Create Release'
                 id: create_release
                 uses: actions/create-release@v1
