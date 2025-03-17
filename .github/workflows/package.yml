@@ -91,19 +91,16 @@ jobs:
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Linux
-                    path: StarMade-Launcher-Linux/StarMade-Launcher
                     merge-multiple: true
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Windows
-                    path: StarMade-Launcher-Windows/StarMade-Launcher.exe
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-MacOS
-                    path: StarMade-Launcher-MacOS/StarMade-Launcher
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
