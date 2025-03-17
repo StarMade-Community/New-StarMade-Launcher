@@ -58,10 +58,23 @@ jobs:
                 if: ${{ matrix.os == 'macos-latest' }}
                 run: |
                     codesign --force --deep --sign - ./StarMade-Launcher
-            -   name: 'Upload Build Artifacts'
+            -   name: 'Upload Build Artifacts (Linux)'
+                if: ${{ matrix.os == 'ubuntu-latest' }}
                 uses: actions/upload-artifact@v4
                 with:
-                    name: StarMade-Launcher-${{ matrix.label }}
+                    name: StarMade-Launcher-Linux
+                    path: ./StarMade-Launcher
+            -   name: 'Upload Build Artifacts (Windows)'
+                if: ${{ matrix.os == 'windows-latest' }}
+                uses: actions/upload-artifact@v4
+                with:
+                    name: StarMade-Launcher-Windows
+                    path: ./StarMade-Launcher.exe
+            -   name: 'Upload Build Artifacts (MacOS)'
+                if: ${{ matrix.os == 'macos-latest' }}
+                uses: actions/upload-artifact@v4
+                with:
+                    name: StarMade-Launcher-MacOS
                     path: ./StarMade-Launcher
     publish-executables:
         name: 'Publish Executables'
@@ -78,19 +91,19 @@ jobs:
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Linux
-                    path: StarMade-Launcher-Linux
+                    path: StarMade-Launcher-Linux/StarMade-Launcher
                     merge-multiple: true
             -   name: 'Download Build Artifacts (Windows)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-Windows
-                    path: StarMade-Launcher-Windows
+                    path: StarMade-Launcher-Windows/StarMade-Launcher.exe
                     merge-multiple: true
             -   name: 'Download Build Artifacts (MacOS)'
                 uses: actions/download-artifact@v4
                 with:
                     name: StarMade-Launcher-MacOS
-                    path: StarMade-Launcher-MacOS
+                    path: StarMade-Launcher-MacOS/StarMade-Launcher
                     merge-multiple: true
             -   name: 'Set Version Number'
                 run: |
