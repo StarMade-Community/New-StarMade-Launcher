@@ -132,6 +132,24 @@ jobs:
             -   name: 'Copy Launcher Jar (MacOS)'
                 run: |
                     cp StarMade-Starter.jar StarMade-Launcher-MacOS/StarMade-Launcher.jar
+            -   name: 'Copy jre8.zip (Windows)'
+                run: |
+                    cp -r java/Windows/jre8.zip StarMade-Launcher-Windows/jre8.zip
+            -   name: 'Copy jre23.zip (Windows)'
+                run: |
+                    cp -r java/Windows/jre23.zip StarMade-Launcher-Windows/jre23.zip
+            -   name: 'Copy jre8.zip (Linux)'
+                run: |
+                    cp -r java/Linux/jre8.zip StarMade-Launcher-Linux/jre8.zip
+            -   name: 'Copy jre23.zip (Linux)'
+                run: |
+                    cp -r java/Linux/jre23.zip StarMade-Launcher-Linux/jre23.zip
+            -   name: 'Copy jre8.zip (MacOS)'
+                run: |
+                    cp -r java/MacOS/jre8.zip StarMade-Launcher-MacOS/jre8.zip
+            -   name: 'Copy jre23.zip (MacOS)'
+                run: |
+                    cp -r java/MacOS/jre23.zip StarMade-Launcher-MacOS/jre23.zip
             -   name: 'Create Windows Archive'
                 run: |
                     zip -r StarMade-Launcher-Windows.zip StarMade-Launcher-Windows
