@@ -12,18 +12,13 @@ public class StarMadeStarter {
 	
 	public static void main(String[] args) {
 		try {
-			//Look for ./StarMade Launcher.jar
 			String launcherPath = "./StarMade-Launcher.jar";
 			File launcher = new File(launcherPath);
 			if(launcher.exists()) {
 				if(!launcher.canExecute()) launcher.setExecutable(true);
-				File smFolder = new File("./StarMade");
-				if(!smFolder.exists()) smFolder.mkdirs();
-				
-				String javaPath = "./jre23/bin/java";
+				String javaPath = "./StarMade/jre23/bin/java";
 				if(OperatingSystem.getCurrent() == OperatingSystem.WINDOWS) javaPath += ".exe";
-				else if(OperatingSystem.getCurrent() == OperatingSystem.MAC) javaPath = "./jre23/Contents/Home/bin/java";
-				
+				else if(OperatingSystem.getCurrent() == OperatingSystem.MAC) javaPath = "./StarMade/jre23/Contents/Home/bin/java";
 				ProcessBuilder processBuilder = new ProcessBuilder(javaPath, "-jar", launcherPath, String.join(" ", args));
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
