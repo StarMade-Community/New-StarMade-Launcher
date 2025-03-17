@@ -4,26 +4,10 @@
 
 # Build Outputs
 /build/
-/launcher-test/
-/node_modules/
-/release-builds/
-src/main/resources/Updater.jar
-MANIFEST.MF
-
-# Executables
-[Ss]tar[Mm]ade[ -][Ll]auncher.jar
-[Ss]tar[Mm]ade[ -][Ll]auncher.exe
-
-# Extracted folders
-/jdk*
-/jre*
 
 # Game Files
 /StarMade/
-StarMade Launcher.xml
-StarMade_Launcher*.zip
 launch-settings.json
-version.txt
 
 # MacOS Files
 .DS_Store
