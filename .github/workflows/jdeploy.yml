@@ -21,6 +21,13 @@ jobs:
                 uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
                 with:
                     arguments: build
+            -   name: 'Set Version Number'
+                run: |
+                    echo "VERSION=$(./gradlew properties -q | grep "version: " | awk '{print $2}')" >> $GITHUB_ENV
+            -   name: 'Set Tag Name'
+                id: tag_name
+                run: |
+                    echo "TAG_NAME=${{ env.VERSION }}" >> $GITHUB_ENV
             -   name: Build App Installer Bundles
                 uses: shannah/jdeploy@master
                 with:
