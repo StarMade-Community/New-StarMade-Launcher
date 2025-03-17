@@ -1,19 +1,14 @@
 {
     "bin": {"StarMade-Launcher": "jdeploy-bundle/jdeploy.js"},
-    "author": "",
+    "author": "TheDerpGamer",
     "description": "",
     "main": "index.js",
-    "preferGlobal": true,
-    "repository": "",
+    "preferGlobal": false,
+    "repository": "https://github.com/StarMade-Community/New-StarMade-Launcher",
     "version": "3.2.0",
     "jdeploy": {
         "jdk": false,
         "publishTargets": [
-            {
-                "name": "npm: StarMade-Launcher",
-                "type": "NPM",
-                "url": ""
-            },
             {
                 "name": "github: StarMade-Launcher",
                 "type": "GITHUB",
