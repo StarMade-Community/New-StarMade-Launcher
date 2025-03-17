@@ -1,8 +1,7 @@
-java/linux/jre18/jre18.tar.gz filter=lfs diff=lfs merge=lfs -text
-java/linux/jre8/jre8.tar.gz filter=lfs diff=lfs merge=lfs -text
-java/mac/jre8/jre8.tar.gz filter=lfs diff=lfs merge=lfs -text
-java/mac/jre18/jre18.tar.gz filter=lfs diff=lfs merge=lfs -text
-java/windows/jre8.zip filter=lfs diff=lfs merge=lfs -text
-java/windows/jre8/jre8.zip filter=lfs diff=lfs merge=lfs -text
-java/windows/jre18/jre18.zip filter=lfs diff=lfs merge=lfs -text
+java/Linux/jre23.zip filter=lfs diff=lfs merge=lfs -text
+java/Linux/jre8.zip filter=lfs diff=lfs merge=lfs -text
+java/MacOS/jre8.zip filter=lfs diff=lfs merge=lfs -text
+java/MacOS/jre23.zip filter=lfs diff=lfs merge=lfs -text
+java/Windows/jre8.zip filter=lfs diff=lfs merge=lfs -text
+java/Windows/jre23.zip filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
