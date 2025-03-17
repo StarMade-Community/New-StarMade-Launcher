@@ -38,7 +38,7 @@ public class StarMadeLauncher extends JFrame {
 
 	public static final String DOWNLOAD_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/releases";
 	public static final String BUG_REPORT_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/issues";
-	public static final String LAUNCHER_VERSION = "3.1.10"; //This is dumb, why are we hardcoding this
+	public static final String LAUNCHER_VERSION = "3.2.0"; //This is dumb, why are we hardcoding this
 	private static final String[] J23ARGS = {"--add-opens java.base/jdk.internal.misc=ALL-UNNAMED"};
 	private static IndexFileEntry gameVersion;
 	private static GameBranch lastUsedBranch = GameBranch.RELEASE;
