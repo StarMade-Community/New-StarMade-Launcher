@@ -126,42 +126,39 @@ jobs:
             -   name: 'Create Launcher Directory (MacOS)'
                 run: |
                     mkdir StarMade-Launcher-MacOS/StarMade
-            -   name: 'Set working directory (Windows)'
+            -   name: 'Copy Launcher Jar (Windows)'
                 run: |
-                    cd ./java/Windows
-            -   name: 'Unzip JRE8 (Windows)'
+                    cp StarMade-Starter.jar StarMade-Launcher-Windows/StarMade-Launcher.jar
+            -   name: 'Copy Launcher Jar (Linux)'
                 run: |
-                    unzip -o ./jre8.zip -d ../../StarMade-Launcher-Windows/StarMade
-            -   name: 'Unzip JRE23 (Windows)'
+                    cp StarMade-Starter.jar StarMade-Launcher-Linux/StarMade-Launcher.jar
+            -   name: 'Copy Launcher Jar (MacOS)'
                 run: |
-                    unzip -o ./jre23.zip -d ../../StarMade-Launcher-Windows/StarMade
-            -   name: 'Set working directory (Linux)'
+                    cp StarMade-Starter.jar StarMade-Launcher-MacOS/StarMade-Launcher.jar
+            -   name: 'Copy jre8.zip (Windows)'
                 run: |
-                    cd ../Linux
-            -   name: 'Unzip JRE8 (Linux)'
+                    cp -r java/Windows/jre8.zip StarMade-Launcher-Windows/jre8.zip
+            -   name: 'Copy jre23.zip (Windows)'
                 run: |
-                    unzip -o ./jre8.zip -d ../../StarMade-Launcher-Linux/StarMade
-            -   name: 'Unzip JRE23 (Linux)'
+                    cp -r java/Windows/jre23.zip StarMade-Launcher-Windows/jre23.zip
+            -   name: 'Copy jre8.zip (Linux)'
                 run: |
-                    unzip -o ./jre23.zip -d ../../StarMade-Launcher-Linux/StarMade
-            -   name: 'Set working directory (MacOS)'
+                    cp -r java/Linux/jre8.zip StarMade-Launcher-Linux/jre8.zip
+            -   name: 'Copy jre23.zip (Linux)'
                 run: |
-                    cd ../MacOS
-            -   name: 'Unzip JRE8 (MacOS)'
+                    cp -r java/Linux/jre23.zip StarMade-Launcher-Linux/jre23.zip
+            -   name: 'Copy jre8.zip (MacOS)'
                 run: |
-                    unzip -o ./jre8.zip -d ../../StarMade-Launcher-MacOS/StarMade
-            -   name: 'Unzip JRE23 (MacOS)'
+                    cp -r java/MacOS/jre8.zip StarMade-Launcher-MacOS/jre8.zip
+            -   name: 'Copy jre23.zip (MacOS)'
                 run: |
-                    unzip -o ./jre23.zip -d ../../StarMade-Launcher-MacOS/StarMade
-            -   name: 'Set working directory'
-                run: |
-                    cd ../../
-            -   name: 'Create Linux Archive'
-                run: |
-                    zip -r StarMade-Launcher-Linux.zip StarMade-Launcher-Linux
+                    cp -r java/MacOS/jre23.zip StarMade-Launcher-MacOS/jre23.zip
             -   name: 'Create Windows Archive'
                 run: |
                     zip -r StarMade-Launcher-Windows.zip StarMade-Launcher-Windows
+            -   name: 'Create Linux Archive'
+                run: |
+                    zip -r StarMade-Launcher-Linux.zip StarMade-Launcher-Linux
             -   name: 'Create MacOS Archive'
                 run: |
                     zip -r StarMade-Launcher-MacOS.zip StarMade-Launcher-MacOS

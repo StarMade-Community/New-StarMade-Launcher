@@ -19,6 +19,23 @@ public class StarMadeStarter {
 				String javaPath = "./StarMade/jre23/bin/java";
 				if(OperatingSystem.getCurrent() == OperatingSystem.WINDOWS) javaPath += ".exe";
 				else if(OperatingSystem.getCurrent() == OperatingSystem.MAC) javaPath = "./StarMade/jre23/Contents/Home/bin/java";
+				if(!new File(javaPath).exists()) {
+					System.out.println("Java 23 not found, extracting JRE23.zip...");
+					ProcessBuilder processBuilder = new ProcessBuilder("unzip", "-o", "jre23.zip", "-d", "./StarMade");
+					processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+					processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+					processBuilder.start().waitFor();
+					System.out.println("Java 23 extracted.");
+					
+					System.out.println("Java 8 not found, extracting JRE8.zip...");
+					processBuilder = new ProcessBuilder("unzip", "-o", "jre8.zip", "-d", "./StarMade");
+					processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+					processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+					processBuilder.start().waitFor();
+					System.out.println("Java 8 extracted.");
+				}
+				
+				System.out.println("Starting launcher...");
 				ProcessBuilder processBuilder = new ProcessBuilder(javaPath, "-jar", launcherPath, String.join(" ", args));
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
