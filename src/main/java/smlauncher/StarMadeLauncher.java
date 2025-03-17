@@ -2,7 +2,6 @@ package smlauncher;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import smlauncher.community.LauncherCommunityPanel;
-import smlauncher.downloader.JavaDownloader;
 import smlauncher.downloader.JavaVersion;
 import smlauncher.fileio.TextFileUtil;
 import smlauncher.news.LauncherNewsPanel;
@@ -52,7 +51,6 @@ public class StarMadeLauncher extends JFrame {
 	private final VersionRegistry versionRegistry;
 	private final DownloadStatus dlStatus = new DownloadStatus();
 	private static UpdaterThread updaterThread;
-	private static JavaDownloader downloader;
 	private int mouseX;
 	private int mouseY;
 	private JButton updateButton;
@@ -196,7 +194,6 @@ public class StarMadeLauncher extends JFrame {
 
 	public static void emergencyStop() {
 		if(updaterThread != null) updaterThread.interrupt();
-		if(downloader != null) downloader.forceStopThread();
 	}
 
 	private static void startGameHeadless() {
@@ -477,38 +474,6 @@ public class StarMadeLauncher extends JFrame {
 			commandComponents.add("-port:" + port);
 		}
 		return commandComponents;
-	}
-
-	private void downloadJRE(JavaVersion version) throws Exception {
-		if(new File(getJavaPath(version)).exists()) {
-			System.out.println(version + " already downloaded");
-			return;
-		}
-		System.out.println("Downloading " + version + "...");
-		downloader = new JavaDownloader(version);
-		JDialog dialog = new JDialog();
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		dialog.setModal(true);
-		dialog.setResizable(false);
-		dialog.setTitle("Performing First Time Setup");
-		dialog.setSize(500, 100);
-		dialog.setLocationRelativeTo(null);
-		dialog.setLayout(new BorderLayout());
-
-		JPanel dialogPanel = new JPanel();
-		dialogPanel.setDoubleBuffered(true);
-		dialogPanel.setOpaque(true);
-		dialogPanel.setLayout(new BorderLayout());
-		dialog.add(dialogPanel);
-
-		JLabel downloadLabel = new JLabel("Downloading " + version + "...");
-		downloadLabel.setDoubleBuffered(true);
-		downloadLabel.setOpaque(true);
-		downloadLabel.setFont(new Font("Roboto", Font.BOLD, 16));
-		downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		dialogPanel.add(downloadLabel, BorderLayout.CENTER);
-
-		downloader.downloadAndUnzip(dialog);
 	}
 
 	private IndexFileEntry getLastUsedVersion() {
