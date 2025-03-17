@@ -126,9 +126,9 @@ jobs:
             -   name: 'Create Launcher Directory (MacOS)'
                 run: |
                     mkdir StarMade-Launcher-MacOS/StarMade
-            -   name: 'List Files'
+            -   name: 'List Files Recursively'
                 run: |
-                    ls -la ./
+                    ls -R
             -   name: 'Unzip JRE8 (Windows)'
                 run: |
                     unzip -o java/Windows/jre8.zip -d StarMade-Launcher-Windows/StarMade
