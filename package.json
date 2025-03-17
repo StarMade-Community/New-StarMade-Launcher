@@ -1,0 +1,39 @@
+{
+    "bin": {"StarMade-Launcher": "jdeploy-bundle/jdeploy.js"},
+    "author": "",
+    "description": "",
+    "main": "index.js",
+    "preferGlobal": true,
+    "repository": "",
+    "version": "3.2.0",
+    "jdeploy": {
+        "jdk": false,
+        "publishTargets": [
+            {
+                "name": "npm: StarMade-Launcher",
+                "type": "NPM",
+                "url": ""
+            },
+            {
+                "name": "github: StarMade-Launcher",
+                "type": "GITHUB",
+                "url": "https://github.com/StarMade-Community/New-StarMade-Launcher/releases"
+            }
+        ],
+        "javaVersion": "23",
+        "jar": "StarMade-Launcher.jar",
+        "javafx": true,
+        "title": "StarMade Launcher"
+    },
+    "dependencies": {
+        "command-exists-promise": "^2.0.2",
+        "node-fetch": "2.6.7",
+        "tar": "^4.4.8",
+        "yauzl": "^2.10.0",
+        "shelljs": "^0.8.4"
+    },
+    "license": "ISC",
+    "name": "StarMade-Launcher",
+    "files": ["jdeploy-bundle"],
+    "scripts": {"test": "echo \"Error: no test specified\" && exit 1"}
+}

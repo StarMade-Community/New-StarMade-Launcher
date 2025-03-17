@@ -40,6 +40,7 @@ public class StarMadeStarter {
 				processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
 				processBuilder.start();
+				System.exit(0);
 			} else System.err.println("Launcher not found at: " + launcherPath);
 		} catch(Exception exception) {
 			exception.printStackTrace();

@@ -15,3 +15,4 @@ launch-settings.json
 
 /Starter/.gradle/
 /Starter/build/
+/node_modules/

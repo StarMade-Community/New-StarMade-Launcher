@@ -49,7 +49,7 @@ jar {
 	}
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 	archiveFileName = 'StarMade-Launcher.jar'
-	destinationDirectory = file('release-builds/' + os + '/StarMade-Launcher')
+	destinationDirectory = file('StarMade-Launcher')
 }
 
 clean {
