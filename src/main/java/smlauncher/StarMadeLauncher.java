@@ -2,7 +2,6 @@ package smlauncher;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import smlauncher.community.LauncherCommunityPanel;
-import smlauncher.downloader.JavaVersion;
 import smlauncher.fileio.TextFileUtil;
 import smlauncher.news.LauncherNewsPanel;
 import smlauncher.starmade.*;
@@ -38,7 +37,6 @@ public class StarMadeLauncher extends JFrame {
 
 	public static final String DOWNLOAD_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/releases";
 	public static final String BUG_REPORT_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/issues";
-	public static final String LAUNCHER_VERSION = "3.2.0"; //This is dumb, why are we hardcoding this
 	private static final String[] J23ARGS = {"--add-opens java.base/jdk.internal.misc=ALL-UNNAMED"};
 	private static IndexFileEntry gameVersion;
 	private static GameBranch lastUsedBranch = GameBranch.RELEASE;
@@ -67,7 +65,7 @@ public class StarMadeLauncher extends JFrame {
 
 	public StarMadeLauncher() {
 		// Set window properties
-		super("StarMade Launcher [" + LAUNCHER_VERSION + "]");
+		super("StarMade Launcher");
 		Thread.currentThread().setUncaughtExceptionHandler((t, e) -> LogManager.logFatal("Encountered an unexpected error \"" + e.getClass().getSimpleName() + "\"", e));
 
 		setBounds(100, 100, 800, 550);
@@ -171,7 +169,6 @@ public class StarMadeLauncher extends JFrame {
 
 			if(headless) {
 				System.out.println("Running in headless mode");
-				JavaVersion javaVersion = JavaVersion.JAVA_8;
 				gameVersion = new VersionRegistry().getLatestVersion(buildBranch);
 				if(gameVersion == null) {
 					System.err.println("Could not get latest game version, defaulting to Java 8");
@@ -183,9 +180,8 @@ public class StarMadeLauncher extends JFrame {
 						gameVersion = new VersionRegistry().getLatestVersion(GameBranch.RELEASE);
 					}
 					setGameVersion(gameVersion);
-				} else if(!gameVersion.version.startsWith("0.2") && !gameVersion.version.startsWith("0.1")) javaVersion = JavaVersion.JAVA_23;
+				}
 				setGameVersion(gameVersion);
-				System.out.println("Using game version " + gameVersion.version + " on branch " + gameVersion.branch + " with Java " + javaVersion);
 				if(serverMode) startServerHeadless();
 				else startGameHeadless();
 			} else startup();
@@ -275,7 +271,7 @@ public class StarMadeLauncher extends JFrame {
 	}
 
 	public static void displayHelp() {
-		System.out.println("StarMade Launcher " + LAUNCHER_VERSION + " Help:");
+		System.out.println("StarMade Launcher Help:");
 		System.out.println("-version : Version selection prompt");
 		System.out.println("-no_gui : Don't start gui (needed for linux dedicated servers)");
 		System.out.println("-no_backup : Don't create backup (default backup is server database only)");
@@ -428,13 +424,13 @@ public class StarMadeLauncher extends JFrame {
 		}
 	}
 
-	private static String getJavaPath(JavaVersion version) {
-		return LaunchSettings.getInstallDir() + "/" + String.format(currentOS.javaPath, version.number);
+	private static String getJavaPath() {
+		return LaunchSettings.getInstallDir() + "/" + String.format(currentOS.javaPath, 23);
 	}
 
 	public static ArrayList<String> getCommandComponents(boolean server) {
 		boolean useJava8 = gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1");
-		String bundledJavaPath = new File(useJava8 ? getJavaPath(JavaVersion.JAVA_8) : getJavaPath(JavaVersion.JAVA_23)).getAbsolutePath();
+		String bundledJavaPath = new File(getJavaPath()).getAbsolutePath();
 
 		ArrayList<String> commandComponents = new ArrayList<>();
 		commandComponents.add(bundledJavaPath);

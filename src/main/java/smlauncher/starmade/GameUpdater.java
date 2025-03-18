@@ -24,7 +24,6 @@ public class GameUpdater extends Observable {
 	public static final int BACK_DB = 1;
 	public static final int BACK_ALL = 2;
 	public static String FILES_URL = "http://files.star-made.org/";
-	public static String LAUNCHER_VERSION_SITE = "http://files.star-made.org/version";
 	public static String MIRROR_SITE = "http://files.star-made.org/mirrors";
 
 	public static final boolean PRINT_ALL_DOWNLOADS = false;
@@ -90,19 +89,6 @@ public class GameUpdater extends Observable {
 		u.startUpdateNew(installDir, u.versions.get(k), false, backUp);
 	}
 
-	public static String getRemoteLauncherVersion() throws IOException {
-		URL urlVersion = new URL(LAUNCHER_VERSION_SITE);
-		URLConnection openConnection = urlVersion.openConnection();
-		openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
-		openConnection.setConnectTimeout(10000);
-		openConnection.setReadTimeout(10000);
-		// Read all the text returned by the server
-		BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(openConnection.getInputStream()), StandardCharsets.UTF_8));
-		String version = in.readLine();
-		in.close();
-		return version;
-	}
-
 	public static int askBackup(JFrame f) {
 
 		String[] options = {"Yes (Only Database)", "Yes (Everything)", "No"};
@@ -159,8 +145,6 @@ public class GameUpdater extends Observable {
 		loading = true;
 		try {
 			versions.clear();
-			String version = getRemoteLauncherVersion();
-			if(!Objects.equals(version, StarMadeLauncher.LAUNCHER_VERSION)) throw new OldVersionException("You have an old Launcher Version.\n" + "Please download the latest Launcher Version at " + StarMadeLauncher.DOWNLOAD_URL + "\n('retry' will let you ignore this message [not recommended!])");
 		} catch(Exception exception) {
 			LogManager.logWarning("Error while checking Launcher Version", exception);
 		} finally {
@@ -177,7 +161,7 @@ public class GameUpdater extends Observable {
 
 			URLConnection openConnection = urlMirrors.openConnection();
 			openConnection.setConnectTimeout(10000);
-			openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
+			openConnection.setRequestProperty("User-Agent", "StarMade-Updater");
 			int version = 0;
 			// Read all the text returned by the server
 			BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(openConnection.getInputStream()), StandardCharsets.UTF_8));
@@ -201,7 +185,7 @@ public class GameUpdater extends Observable {
 			URLConnection openConnection = url.openConnection();
 			openConnection.setConnectTimeout(10000);
 			openConnection.setReadTimeout(10000);
-			openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
+			openConnection.setRequestProperty("User-Agent", "StarMade-Updater");
 			// Read all the text returned by the server
 			BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(openConnection.getInputStream()), StandardCharsets.UTF_8));
 			String str;
@@ -412,7 +396,7 @@ public class GameUpdater extends Observable {
 		System.err.println("URL::: " + FILES_URL + "/smeula.txt");
 		URL urlVersion = new URL(FILES_URL + "/smeula.txt");
 		URLConnection openConnection = urlVersion.openConnection();
-		openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
+		openConnection.setRequestProperty("User-Agent", "StarMade-Updater");
 		openConnection.setConnectTimeout(10000);
 		openConnection.setReadTimeout(10000);
 		Eula e = new Eula();
@@ -442,7 +426,7 @@ public class GameUpdater extends Observable {
 	public static ChecksumFile getChecksums(String relPath) throws IOException {
 		URL urlVersion = new URL(relPath + "/checksums");
 		URLConnection openConnection = urlVersion.openConnection();
-		openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
+		openConnection.setRequestProperty("User-Agent", "StarMade-Updater");
 		openConnection.setConnectTimeout(10000);
 		openConnection.setReadTimeout(10000);
 		BufferedReader in = new BufferedReader(new InputStreamReader(new BufferedInputStream(openConnection.getInputStream()), StandardCharsets.UTF_8));

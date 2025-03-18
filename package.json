@@ -1,7 +1,7 @@
 {
     "bin": {"StarMade-Launcher": "jdeploy-bundle/jdeploy.js"},
     "author": "TheDerpGamer",
-    "description": "",
+    "description": "New Launcher for StarMade versions >= 0.300.100",
     "main": "index.js",
     "preferGlobal": false,
     "repository": "https://github.com/StarMade-Community/New-StarMade-Launcher",
@@ -9,7 +9,14 @@
     "jdeploy": {
         "jdk": false,
         "publishTargets": [],
-        "javaVersion": "21",
+        "javaVersion": "23",
+        "bundles": [
+            "mac-x64",
+            "mac-arm64",
+            "win",
+            "linux"
+        ],
+        "icon": "icon.png",
         "jar": "StarMade-Launcher.jar",
         "javafx": true,
         "title": "StarMade Launcher"
@@ -22,7 +29,7 @@
         "shelljs": "^0.8.4"
     },
     "license": "ISC",
-    "name": "StarMade-Launcher",
+    "name": "starmade-launcher",
     "files": ["jdeploy-bundle"],
     "scripts": {"test": "echo \"Error: no test specified\" && exit 1"},
     "homepage": "https://www.star-made.org/"

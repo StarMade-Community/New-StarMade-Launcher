@@ -48,7 +48,7 @@ public class VersionRegistry {
 		URLConnection openConnection = url.openConnection();
 		openConnection.setConnectTimeout(10000);
 		openConnection.setReadTimeout(10000);
-		openConnection.setRequestProperty("User-Agent", "StarMade-Updater_" + StarMadeLauncher.LAUNCHER_VERSION);
+		openConnection.setRequestProperty("User-Agent", "StarMade-Updater");
 
 		// Read all versions
 		List<IndexFileEntry> versions = new ArrayList<>();
