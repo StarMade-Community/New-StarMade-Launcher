@@ -20,7 +20,6 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,7 +36,6 @@ import java.util.Objects;
  */
 public class StarMadeLauncher extends JFrame {
 
-	public static final String DOWNLOAD_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/releases";
 	public static final String BUG_REPORT_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/issues";
 	private static final String J23ARGS = "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED";
 	private static IndexFileEntry gameVersion;
@@ -80,6 +78,7 @@ public class StarMadeLauncher extends JFrame {
 		try {
 			URL resource = StarMadeLauncher.class.getResource("/sprites/icon.png");
 			if(resource != null) setIconImage(Toolkit.getDefaultToolkit().getImage(resource));
+			else setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
 		} catch(Exception exception) {
 			LogManager.logException("Failed to set window icon", exception);
 		}
@@ -96,9 +95,6 @@ public class StarMadeLauncher extends JFrame {
 		// Read launch settings
 		LaunchSettings.readSettings();
 		LogManager.initialize();
-
-		//Set working directory to install directory
-		System.setProperty("user.dir", "../" + LaunchSettings.getInstallDir());
 
 		// Read game version and branch
 		
@@ -368,6 +364,7 @@ public class StarMadeLauncher extends JFrame {
 
 	private static JComboBox<String> createDropdown() {
 		JComboBox<String> dropDown = new JComboBox<>();
+		dropDown.setFocusable(false);
 		dropDown.setDoubleBuffered(true);
 		dropDown.setOpaque(true);
 		dropDown.setBackground(Palette.paneColor);
@@ -467,7 +464,7 @@ public class StarMadeLauncher extends JFrame {
 
 		// Add versions to dropdown
 		for(IndexFileEntry version : versions) {
-			if(version.equals(versions.get(0))) versionDropdown.addItem(version.version + " (Latest)");
+			if(version.equals(versions.getFirst())) versionDropdown.addItem(version.version + " (Latest)");
 			else versionDropdown.addItem(version.version);
 		}
 	}
@@ -940,6 +937,7 @@ public class StarMadeLauncher extends JFrame {
 			dialogPanel.add(installButton);
 			installButton.addActionListener(e1 -> {
 				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setCurrentDirectory(new File(LaunchSettings.getInstallDir()));
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int result = fileChooser.showOpenDialog(dialog[0]);
 				if(result == JFileChooser.APPROVE_OPTION) {
@@ -949,7 +947,6 @@ public class StarMadeLauncher extends JFrame {
 			});
 
 			JButton repairButton = new JButton("Repair");
-			repairButton.setIcon(UIManager.getIcon("FileView.checkIcon"));
 			repairButton.setDoubleBuffered(true);
 			repairButton.setOpaque(false);
 			repairButton.setFont(new Font("Roboto", Font.BOLD, 12));
@@ -963,6 +960,19 @@ public class StarMadeLauncher extends JFrame {
 						updateGame(version);
 					}
 				} else JOptionPane.showMessageDialog(dialog[0], "The Launcher needs to be online to do this!", "Error", JOptionPane.ERROR_MESSAGE);
+			});
+
+			JButton openCurrentInstallButton = new JButton("Open Install Folder");
+			openCurrentInstallButton.setDoubleBuffered(true);
+			openCurrentInstallButton.setOpaque(false);
+			openCurrentInstallButton.setFont(new Font("Roboto", Font.BOLD, 12));
+			dialogPanel.add(openCurrentInstallButton);
+			openCurrentInstallButton.addActionListener(e1 -> {
+				try {
+					Desktop.getDesktop().open(new File(LaunchSettings.getInstallDir()));
+				} catch(IOException exception) {
+					LogManager.logException("Failed to open current install directory", exception);
+				}
 			});
 
 			JPanel buttonPanel = new JPanel();
@@ -979,10 +989,11 @@ public class StarMadeLauncher extends JFrame {
 			cancelButton.setDoubleBuffered(true);
 			buttonPanel.add(cancelButton);
 			saveButton.addActionListener(e1 -> {
-				String installDir = installLabel.getText();
+				String installDir = installLabelPath.getText();
 				if(installDir != null) {
-					LaunchSettings.setInstallDir(installDir);
+					LaunchSettings.setInstallDir(new File(installDir).getAbsolutePath());
 					LaunchSettings.saveSettings();
+					recreateButtons(playPanel, true);
 				}
 				dialog[0].dispose();
 			});
@@ -1060,13 +1071,12 @@ public class StarMadeLauncher extends JFrame {
 
 	private long getSystemMemory() {
 		try {
-			//Todo: Fix
-//			HardwareAbstractionLayer hal = new SystemInfo().getHardware();
-//			return hal.getMemory().getTotal() / 1024 / 1024;
+			HardwareAbstractionLayer hal = new SystemInfo().getHardware();
+			return hal.getMemory().getTotal() / 1024 / 1024;
 		} catch(Exception exception) {
 			LogManager.logException("Failed to get system memory", exception);
 		}
-		return 16384;
+		return 16384; //Just assume 16GB if we can't get the memory
 	}
 
 	private void recreateButtons(JPanel playPanel, boolean repair) {
@@ -1159,6 +1169,7 @@ public class StarMadeLauncher extends JFrame {
 		process.redirectError(ProcessBuilder.Redirect.INHERIT);
 		try {
 			process.start();
+			System.exit(0);
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start StarMade", exception);
 		}
@@ -1244,6 +1255,7 @@ public class StarMadeLauncher extends JFrame {
 		branchDropdown.addItem("Dev");
 		branchDropdown.addItem("Pre-Release");
 		branchDropdown.setSelectedIndex(startIndex);
+		branchDropdown.setFocusable(false);
 		branchDropdown.addItemListener(e -> onSelectBranch(branchDropdown, versionDropdown));
 		return branchDropdown;
 	}

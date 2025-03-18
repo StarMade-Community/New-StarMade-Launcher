@@ -2,11 +2,8 @@ package smlauncher;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
-import smlauncher.fileio.TextFileUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -18,7 +15,7 @@ public final class LaunchSettings {
 
 	// TODO store more properties
 
-	private static final String SETTINGS_FILENAME = "./launch-settings.json";
+	private static final String SETTINGS_FILENAME = "./StarMade/launch-settings.json";
 	private static JSONObject launchSettings;
 	
 	// Settings File Methods
@@ -30,6 +27,7 @@ public final class LaunchSettings {
 		// Create file if not present
 		if(!jsonFile.exists()) {
 			launchSettings = defaultSettings;
+			LogManager.initialize();
 			saveSettings();
 		} else {
 			// Read the settings file
@@ -39,6 +37,8 @@ public final class LaunchSettings {
 				LogManager.logException("Could not read launch settings from file!", exception);
 			}
 		}
+		File starMadeDir = new File(getInstallDir());
+		if(!starMadeDir.exists()) starMadeDir.mkdirs();
 	}
 
 	public static void saveSettings() {
@@ -54,12 +54,12 @@ public final class LaunchSettings {
 
 	private static JSONObject getDefaultLaunchSettings() {
 		JSONObject settings = new JSONObject();
-		settings.put("installDir", "./StarMade");
+		settings.put("installDir", new File("StarMade/StarMade").getAbsolutePath());
 		settings.put("jvm_args", "");
 		settings.put("lastUsedBranch", 0); // Release
 		settings.put("lastUsedVersion", "NONE");
 		settings.put("launchArgs", "");
-		settings.put("memory", 4096);
+		settings.put("memory", 8192);
 		return settings;
 	}
 

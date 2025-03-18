@@ -3,7 +3,6 @@ package smlauncher.starmade;
 import smlauncher.LogManager;
 import smlauncher.StarMadeLauncher;
 import smlauncher.community.LauncherCommunityPanel;
-import smlauncher.util.OperatingSystem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,45 +17,42 @@ public class ErrorDialog extends JDialog {
 
 	public ErrorDialog(String error, String description, Throwable exception, boolean exitAfterConfirmation) {
 		StarMadeLauncher.emergencyStop();
-		setTitle("Error");
+		setTitle(error);
 		setSize(750, 500);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLayout(new BorderLayout());
-		setResizable(true);
+		setResizable(false);
 		setAlwaysOnTop(true);
 
 		JPanel errorPanel = new JPanel();
 		errorPanel.setLayout(new BoxLayout(errorPanel, BoxLayout.Y_AXIS));
 		errorPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		JTextArea errorLabel = new JTextArea(error);
-		errorLabel.setEditable(false);
-		errorLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		errorPanel.add(errorLabel, BorderLayout.NORTH);
-
-		//scroll pane
-
-		JPanel descriptionPanel = new JPanel();
-		add(descriptionPanel, BorderLayout.CENTER);
-		
-		StringBuilder descriptionBuilder = new StringBuilder();
-		descriptionBuilder.append("Description:\n");
-		descriptionBuilder.append("\t").append(description).append("\n");
-		descriptionBuilder.append("Stack Trace:\n");
+		StringBuilder errorBuilder = new StringBuilder();
+		errorBuilder.append("<html><b>").append(exception.getMessage()).append("</b><br>");
+		errorBuilder.append("<br><br><b>Description:</b><br>");
+		errorBuilder.append(description).append("<br>");
+		errorBuilder.append("<br><b>Stack Trace:</b><br>");
 		int i = 0;
 		for(StackTraceElement element : exception.getStackTrace()) {
 			if(i > STACKTRACE_LIMIT) {
-				descriptionBuilder.append("\t...").append("\n");
+				errorBuilder.append("...<br>");
 				break;
 			}
-			descriptionBuilder.append("\t").append(element.toString()).append("\n");
-			i ++;
+			errorBuilder.append(element.toString()).append("<br>");
+			i++;
 		}
 
-		JTextArea stackTraceLabel = new JTextArea(descriptionBuilder.toString());
-		stackTraceLabel.setFont(new Font("Arial", Font.BOLD, 12));
-		descriptionPanel.add(stackTraceLabel);
+		JTextPane descriptionPane = new JTextPane();
+		descriptionPane.setContentType("text/html");
+		descriptionPane.setText(errorBuilder.toString());
+		descriptionPane.setEditable(false);
+		descriptionPane.setFont(new Font("Arial", Font.BOLD, 16));
+		errorPanel.add(descriptionPane, BorderLayout.NORTH);
+
+		JScrollPane scrollPane = new JScrollPane(errorPanel);
+		add(scrollPane, BorderLayout.CENTER);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
