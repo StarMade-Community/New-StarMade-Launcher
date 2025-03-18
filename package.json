@@ -5,7 +5,7 @@
     "main": "index.js",
     "preferGlobal": false,
     "repository": "https://github.com/StarMade-Community/New-StarMade-Launcher",
-    "version": "3.2.7",
+    "version": "3.2.8",
     "jdeploy": {
         "jdk": false,
         "publishTargets": [],
