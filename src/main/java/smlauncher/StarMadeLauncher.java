@@ -39,7 +39,7 @@ public class StarMadeLauncher extends JFrame {
 
 	public static final String DOWNLOAD_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/releases";
 	public static final String BUG_REPORT_URL = "https://github.com/garretreichenbach/New-StarMade-Launcher/issues";
-	private static final String[] J23ARGS = {"--add-opens java.base/jdk.internal.misc=ALL-UNNAMED"};
+	private static final String J23ARGS = "--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED";
 	private static IndexFileEntry gameVersion;
 	private static GameBranch lastUsedBranch = GameBranch.RELEASE;
 	private static boolean debugMode;
@@ -206,7 +206,6 @@ public class StarMadeLauncher extends JFrame {
 		process.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		process.redirectError(ProcessBuilder.Redirect.INHERIT);
 		try {
-			System.out.println("Command: " + String.join(" ", commandComponents));
 			process.start();
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start game in headless mode", exception);
@@ -413,9 +412,9 @@ public class StarMadeLauncher extends JFrame {
 
 	private static String getJavaPath() {
 		if(gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1")) {
-			return LaunchSettings.getInstallDir() + File.separatorChar + String.format(currentOS.javaPath, 8);
+			return LaunchSettings.getInstallDir() + "/" + String.format(currentOS.javaPath, 8);
 		} else {
-			return LaunchSettings.getInstallDir() + File.separatorChar + String.format(currentOS.javaPath, 23);
+			return LaunchSettings.getInstallDir() + "/" + String.format(currentOS.javaPath, 23);
 		}
 	}
 
@@ -477,7 +476,7 @@ public class StarMadeLauncher extends JFrame {
 		ArrayList<String> commandComponents = new ArrayList<>();
 		commandComponents.add(getJavaPath());
 		if(!gameVersion.version.startsWith("0.2") && !gameVersion.version.startsWith("0.1")) {
-			commandComponents.addAll(Arrays.asList(J23ARGS));
+			commandComponents.add(J23ARGS);
 		}
 
 		if(currentOS == OperatingSystem.MAC) {
@@ -915,7 +914,7 @@ public class StarMadeLauncher extends JFrame {
 			installLabel.setOpaque(false);
 			installLabel.setFont(new Font("Roboto", Font.BOLD, 12));
 			installLabelPanel.add(installLabel);
-			JTextField installLabelPath = new JTextField(LaunchSettings.getInstallDir());
+			JTextField installLabelPath = new JTextField(new File(LaunchSettings.getInstallDir()).getAbsolutePath());
 			installLabelPath.setDoubleBuffered(true);
 			installLabelPath.setOpaque(false);
 			installLabelPath.setFont(new Font("Roboto", Font.PLAIN, 12));

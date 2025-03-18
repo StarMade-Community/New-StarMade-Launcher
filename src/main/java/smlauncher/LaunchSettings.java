@@ -1,5 +1,6 @@
 package smlauncher;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import smlauncher.fileio.TextFileUtil;
 
@@ -33,9 +34,7 @@ public final class LaunchSettings {
 		} else {
 			// Read the settings file
 			try {
-				FileInputStream fileInputStream = new FileInputStream(jsonFile);
-				launchSettings = new JSONObject(fileInputStream.readAllBytes());
-				fileInputStream.close();
+				launchSettings = new JSONObject(FileUtils.readFileToString(jsonFile, "UTF-8"));
 			} catch(IOException exception) {
 				LogManager.logException("Could not read launch settings from file!", exception);
 			}
@@ -43,13 +42,11 @@ public final class LaunchSettings {
 	}
 
 	public static void saveSettings() {
+		LogManager.logInfo("Saving launch settings to file...");
 		File settingsFile = new File(SETTINGS_FILENAME);
 		try {
 			settingsFile.createNewFile();
-			FileOutputStream fileOutputStream = new FileOutputStream(settingsFile);
-			fileOutputStream.write(launchSettings.toString(4).getBytes());
-			fileOutputStream.flush();
-			fileOutputStream.close();
+			FileUtils.write(settingsFile, launchSettings.toString(4), "UTF-8");
 		} catch(IOException exception) {
 			LogManager.logException("Could not save launch settings to file!", exception);
 		}
