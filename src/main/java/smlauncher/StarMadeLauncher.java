@@ -101,6 +101,7 @@ public class StarMadeLauncher extends JFrame {
 		System.setProperty("user.dir", "../" + LaunchSettings.getInstallDir());
 
 		// Read game version and branch
+		
 		gameVersion = getLastUsedVersion();
 		setGameVersion(gameVersion);
 		setBranch(gameVersion.branch);
@@ -891,8 +892,6 @@ public class StarMadeLauncher extends JFrame {
 			}
 		});
 		installSettings.addActionListener(e -> {
-			String[] tempInstallDir = {null};
-
 			JDialog[] dialog = {new JDialog()};
 			dialog[0].setModal(true);
 			dialog[0].setResizable(false);
@@ -929,9 +928,7 @@ public class StarMadeLauncher extends JFrame {
 				if(path == null || path.isEmpty()) return;
 				File file = new File(path);
 				if(!file.exists()) return;
-				if(!file.isDirectory()) file = file.getParentFile();
-				tempInstallDir[0] = file.getAbsolutePath();
-				installLabelPath.setText(tempInstallDir[0]);
+				installLabelPath.setText(file.getAbsolutePath());
 			});
 
 			JButton installButton = new JButton("Change");
@@ -948,9 +945,7 @@ public class StarMadeLauncher extends JFrame {
 				int result = fileChooser.showOpenDialog(dialog[0]);
 				if(result == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
-					if(!file.isDirectory()) file = file.getParentFile();
-					tempInstallDir[0] = file.getAbsolutePath();
-					installLabelPath.setText(tempInstallDir[0]);
+					installLabelPath.setText(file.getAbsolutePath());
 				}
 			});
 
@@ -985,7 +980,7 @@ public class StarMadeLauncher extends JFrame {
 			cancelButton.setDoubleBuffered(true);
 			buttonPanel.add(cancelButton);
 			saveButton.addActionListener(e1 -> {
-				String installDir = tempInstallDir[0];
+				String installDir = installLabel.getText();
 				if(installDir != null) {
 					LaunchSettings.setInstallDir(installDir);
 					LaunchSettings.saveSettings();

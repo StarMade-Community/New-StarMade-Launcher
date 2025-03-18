@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import smlauncher.fileio.TextFileUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -17,10 +19,7 @@ public final class LaunchSettings {
 
 	private static final String SETTINGS_FILENAME = "./launch-settings.json";
 	private static JSONObject launchSettings;
-
-	private LaunchSettings() {
-	}
-
+	
 	// Settings File Methods
 
 	public static void readSettings() {
@@ -34,7 +33,9 @@ public final class LaunchSettings {
 		} else {
 			// Read the settings file
 			try {
-				launchSettings = new JSONObject(TextFileUtil.readText(jsonFile));
+				FileInputStream fileInputStream = new FileInputStream(jsonFile);
+				launchSettings = new JSONObject(fileInputStream.readAllBytes());
+				fileInputStream.close();
 			} catch(IOException exception) {
 				LogManager.logException("Could not read launch settings from file!", exception);
 			}
@@ -45,7 +46,10 @@ public final class LaunchSettings {
 		File settingsFile = new File(SETTINGS_FILENAME);
 		try {
 			settingsFile.createNewFile();
-			TextFileUtil.writeText(settingsFile, launchSettings.toString());
+			FileOutputStream fileOutputStream = new FileOutputStream(settingsFile);
+			fileOutputStream.write(launchSettings.toString(4).getBytes());
+			fileOutputStream.flush();
+			fileOutputStream.close();
 		} catch(IOException exception) {
 			LogManager.logException("Could not save launch settings to file!", exception);
 		}
@@ -63,7 +67,6 @@ public final class LaunchSettings {
 	}
 
 	// Settings Getters and Setters
-
 	public static String getInstallDir() {
 		return launchSettings.getString("installDir");
 	}
