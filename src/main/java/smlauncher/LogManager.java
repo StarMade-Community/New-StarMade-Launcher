@@ -8,7 +8,9 @@ import smlauncher.starmade.GameBranch;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * [Description]
@@ -19,27 +21,32 @@ public class LogManager {
 
 	private static final int STACKTRACE_LIMIT = 10;
 	private static final Logger log = LoggerFactory.getLogger(LogManager.class);
-	private static FileWriter logWriter;
-	private static File logFile;
+	private static FileWriter logWriter ;
+	public static File logFile;
 
 	public static void initialize() {
 		try {
 			File logsFolder = new File(LaunchSettings.getInstallDir() + "/logs");
 			if(!logsFolder.exists()) logsFolder.mkdirs();
 			File[] logFiles = logsFolder.listFiles();
+			List<File> logFilesReverse = new ArrayList<>();
 			if(logFiles != null) {
 				for(File logFile : logFiles) {
 					try {
 						String fileName = logFile.getName();
-						if(fileName.startsWith("launcher.") && fileName.endsWith(".log")) {
-							int logNumber = Integer.parseInt(fileName.substring(9, fileName.length() - 4)) + 1;
-							File newLogFile = new File(LaunchSettings.getInstallDir() + "/logs/launcher." + logNumber + ".log");
-							logFile.renameTo(newLogFile);
-						}
+						if(fileName.startsWith("launcher.") && fileName.endsWith(".log")) logFilesReverse.add(logFile);
 					} catch(Exception exception) {
 						exception.printStackTrace();
 					}
 				}
+			}
+			for(int i = logFilesReverse.size() - 1; i >= 0; i--) {
+				File logFile = logFilesReverse.get(i);
+				String fileName = logFile.getName();
+				String[] split = fileName.split("\\.");
+				int logNumber = Integer.parseInt(split[1]);
+				File newLogFile = new File(LaunchSettings.getInstallDir() + "/logs/launcher." + (logNumber + 1) + ".log");
+				logFile.renameTo(newLogFile);
 			}
 			logFile = new File(LaunchSettings.getInstallDir() + "/logs/launcher.0.log");
 			if(logFile.exists()) logFile.delete();

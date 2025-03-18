@@ -15,10 +15,11 @@ public final class LaunchSettings {
 
 	// TODO store more properties
 
-	private static final String SETTINGS_FILENAME = "launch-settings.json";
+	private static final String SETTINGS_FILENAME = "./launch-settings.json";
 	private static JSONObject launchSettings;
 
-	private LaunchSettings() {}
+	private LaunchSettings() {
+	}
 
 	// Settings File Methods
 
@@ -43,6 +44,7 @@ public final class LaunchSettings {
 	public static void saveSettings() {
 		File settingsFile = new File(SETTINGS_FILENAME);
 		try {
+			settingsFile.createNewFile();
 			TextFileUtil.writeText(settingsFile, launchSettings.toString());
 		} catch(IOException exception) {
 			LogManager.logException("Could not save launch settings to file!", exception);

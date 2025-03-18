@@ -6,7 +6,7 @@ plugins {
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.2.0'
+version = '3.2.7'
 
 java {
 	toolchain {
@@ -32,5 +32,17 @@ dependencies {
 	implementation 'org.codehaus.plexus:plexus-archiver:4.10.0'
 	implementation 'org.jasypt:jasypt:1.9.3'
 	implementation 'org.json:json:20240303'
-	implementation 'org.panteleyev:jpackage-gradle-plugin:1.6.0'
+	implementation 'com.github.oshi:oshi-core:5.7.5'
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'smlauncher.StarMadeLauncher'
+	}
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+	archiveFileName = 'StarMade Launcher.jar'
+	destinationDirectory = file('./')
 }

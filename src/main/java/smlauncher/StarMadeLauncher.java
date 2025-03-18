@@ -1,6 +1,8 @@
 package smlauncher;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import oshi.SystemInfo;
+import oshi.hardware.HardwareAbstractionLayer;
 import smlauncher.community.LauncherCommunityPanel;
 import smlauncher.fileio.TextFileUtil;
 import smlauncher.news.LauncherNewsPanel;
@@ -62,6 +64,7 @@ public class StarMadeLauncher extends JFrame {
 	private JScrollPane centerScrollPane;
 	private LauncherNewsPanel newsPanel;
 	private LauncherCommunityPanel communityPanel;
+	private JavaDownloader downloader;
 
 	public StarMadeLauncher() {
 		// Set window properties
@@ -93,6 +96,9 @@ public class StarMadeLauncher extends JFrame {
 		// Read launch settings
 		LaunchSettings.readSettings();
 		LogManager.initialize();
+
+		//Set working directory to install directory
+		System.setProperty("user.dir", "../" + LaunchSettings.getInstallDir());
 
 		// Read game version and branch
 		gameVersion = getLastUsedVersion();
@@ -201,7 +207,6 @@ public class StarMadeLauncher extends JFrame {
 		try {
 			System.out.println("Command: " + String.join(" ", commandComponents));
 			process.start();
-			System.exit(0);
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start game in headless mode", exception);
 		}
@@ -216,7 +221,6 @@ public class StarMadeLauncher extends JFrame {
 		try {
 			System.out.println("Command: " + String.join(" ", commandComponents));
 			process.start();
-			System.exit(0);
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start server in headless mode", exception);
 		}
@@ -406,6 +410,50 @@ public class StarMadeLauncher extends JFrame {
 		}
 	}
 
+	private static String getJavaPath() {
+		if(gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1")) {
+			return LaunchSettings.getInstallDir() + File.separatorChar + String.format(currentOS.javaPath, 8);
+		} else {
+			return LaunchSettings.getInstallDir() + File.separatorChar + String.format(currentOS.javaPath, 23);
+		}
+	}
+
+	private static JavaVersion getJavaVersion() {
+		if(gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1")) {
+			return JavaVersion.JAVA_8;
+		} else {
+			return JavaVersion.JAVA_23;
+		}
+	}
+
+	private void downloadJRE() throws Exception {
+		if(new File(getJavaPath()).exists()) return;
+		downloader = new JavaDownloader(getJavaVersion());
+		JDialog dialog = new JDialog();
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		dialog.setModal(true);
+		dialog.setResizable(false);
+		dialog.setTitle("Performing First Time Setup");
+		dialog.setSize(500, 100);
+		dialog.setLocationRelativeTo(null);
+		dialog.setLayout(new BorderLayout());
+
+		JPanel dialogPanel = new JPanel();
+		dialogPanel.setDoubleBuffered(true);
+		dialogPanel.setOpaque(true);
+		dialogPanel.setLayout(new BorderLayout());
+		dialog.add(dialogPanel);
+
+		JLabel downloadLabel = new JLabel("Downloading Java " + getJavaVersion().number + "...");
+		downloadLabel.setDoubleBuffered(true);
+		downloadLabel.setOpaque(true);
+		downloadLabel.setFont(new Font("Roboto", Font.BOLD, 16));
+		downloadLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		dialogPanel.add(downloadLabel, BorderLayout.CENTER);
+
+		downloader.downloadAndUnzip(dialog);
+	}
+
 	private static void setClientProperties(JComboBox<String> dropdown, UIDefaults defaults) {
 		dropdown.putClientProperty("Nimbus.Overrides", defaults);
 		dropdown.putClientProperty("Nimbus.Overrides.InheritDefaults", true);
@@ -424,17 +472,12 @@ public class StarMadeLauncher extends JFrame {
 		}
 	}
 
-	private static String getJavaPath() {
-		return LaunchSettings.getInstallDir() + "/" + String.format(currentOS.javaPath, 23);
-	}
-
 	public static ArrayList<String> getCommandComponents(boolean server) {
-		boolean useJava8 = gameVersion.version.startsWith("0.2") || gameVersion.version.startsWith("0.1");
-		String bundledJavaPath = new File(getJavaPath()).getAbsolutePath();
-
 		ArrayList<String> commandComponents = new ArrayList<>();
-		commandComponents.add(bundledJavaPath);
-		if(!useJava8) commandComponents.addAll(Arrays.asList(J23ARGS));
+		commandComponents.add(getJavaPath());
+		if(!gameVersion.version.startsWith("0.2") && !gameVersion.version.startsWith("0.1")) {
+			commandComponents.addAll(Arrays.asList(J23ARGS));
+		}
 
 		if(currentOS == OperatingSystem.MAC) {
 			// Run OpenGL on main thread on macOS
@@ -481,7 +524,7 @@ public class StarMadeLauncher extends JFrame {
 			} else {
 				version = LaunchSettings.getLastUsedVersion();
 			}
-			String shortVersion = version.substring(0, version.indexOf('#'));
+			String shortVersion = version.split("#")[0];
 			IndexFileEntry entry = versionRegistry.searchForVersion(e -> shortVersion.equals(e.version));
 			if(entry != null) return entry;
 		} catch(Exception exception) {
@@ -754,7 +797,7 @@ public class StarMadeLauncher extends JFrame {
 //			northPanel.setBackground(Palette.paneColor);
 //			northPanel.setForeground(Palette.foregroundColor);
 			dialogPanel.add(northPanel, BorderLayout.NORTH);
-			JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 2048, getSystemMemory(), LaunchSettings.getMemory());
+			JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 2048, (int) getSystemMemory(), LaunchSettings.getMemory());
 //			slider.setBackground(Palette.paneColor);
 			JLabel sliderLabel = new JLabel("Memory: " + slider.getValue() + " MB");
 //			sliderLabel.setBackground(Palette.paneColor);
@@ -1021,14 +1064,15 @@ public class StarMadeLauncher extends JFrame {
 		serverPanel.setVisible(true);
 	}
 
-	private int getSystemMemory() {
+	private long getSystemMemory() {
 		try {
-			com.sun.management.OperatingSystemMXBean os = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-			return (int) (os.getTotalPhysicalMemorySize() / (1024 * 1024));
+			//Todo: Fix
+//			HardwareAbstractionLayer hal = new SystemInfo().getHardware();
+//			return hal.getMemory().getTotal() / 1024 / 1024;
 		} catch(Exception exception) {
 			LogManager.logException("Failed to get system memory", exception);
 		}
-		return 8192;
+		return 16384;
 	}
 
 	private void recreateButtons(JPanel playPanel, boolean repair) {
@@ -1082,11 +1126,14 @@ public class StarMadeLauncher extends JFrame {
 			playButton.setContentAreaFilled(false);
 			playButton.setBorderPainted(false);
 			playButton.addActionListener(e -> {
-				dispose();
-				LaunchSettings.setLastUsedVersion(gameVersion.version);
-				LaunchSettings.saveSettings();
-				runStarMade(serverMode);
-				System.exit(0);
+				try {
+					dispose();
+					LaunchSettings.setLastUsedVersion(gameVersion.version);
+					LaunchSettings.saveSettings();
+					runStarMade(serverMode);
+				} catch(Exception exception) {
+					LogManager.logFatal("Failed to run StarMade", exception);
+				}
 			});
 			playButton.addMouseListener(new MouseAdapter() {
 				@Override
@@ -1106,21 +1153,22 @@ public class StarMadeLauncher extends JFrame {
 	}
 
 	private void runStarMade(boolean server) {
+		try {
+			downloadJRE();
+		} catch(Exception exception) {
+			LogManager.logFatal("Failed to download JRE", exception);
+		}
 		ArrayList<String> commandComponents = getCommandComponents(server);
 		ProcessBuilder process = new ProcessBuilder(commandComponents);
 		process.directory(new File(LaunchSettings.getInstallDir()));
 		process.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 		process.redirectError(ProcessBuilder.Redirect.INHERIT);
 		try {
-			System.out.println("Command: " + String.join(" ", commandComponents));
 			process.start();
-			System.exit(0);
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start StarMade", exception);
 		}
 	}
-
-	// Dropdown Methods
 
 	private void createPlayPanel(JPanel footerPanel) {
 		clearPanel(playPanel);
