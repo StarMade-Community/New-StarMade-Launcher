@@ -993,7 +993,7 @@ public class StarMadeLauncher extends JFrame {
 				if(installDir != null) {
 					LaunchSettings.setInstallDir(new File(installDir).getAbsolutePath());
 					LaunchSettings.saveSettings();
-					recreateButtons(playPanel, true);
+					recreateButtons(playPanel, false);
 				}
 				dialog[0].dispose();
 			});
@@ -1096,7 +1096,7 @@ public class StarMadeLauncher extends JFrame {
 		playPanelButtonsSub.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		playPanelButtons.add(playPanelButtonsSub, BorderLayout.SOUTH);
 
-		if((repair || !gameJarExists(LaunchSettings.getInstallDir()) || gameVersion == null || (!Objects.equals(gameVersion.version, selectedVersion) && selectedVersion != null)) && !debugMode) {
+		if(checkNeedsUpdate() || repair) {
 			updateButton = new JButton(getIcon("sprites/update_btn.png"));
 			updateButton.setDoubleBuffered(true);
 			updateButton.setOpaque(false);
@@ -1173,6 +1173,10 @@ public class StarMadeLauncher extends JFrame {
 		} catch(Exception exception) {
 			LogManager.logFatal("Failed to start StarMade", exception);
 		}
+	}
+	
+	public boolean checkNeedsUpdate() {
+		return !gameJarExists(LaunchSettings.getInstallDir()) || gameVersion == null || (!Objects.equals(gameVersion.version, selectedVersion) && selectedVersion != null);
 	}
 
 	private void createPlayPanel(JPanel footerPanel) {
