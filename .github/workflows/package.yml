@@ -24,7 +24,7 @@ jobs:
               run: ./gradlew shadowJar
             
             - name: Upload JAR
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: starmade-launcher-jar
                   path: build/libs/StarMade-Launcher.jar
