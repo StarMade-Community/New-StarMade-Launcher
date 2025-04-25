@@ -5,7 +5,7 @@ on:
 
 jobs:
     build-jar:
-        name: Build JAR
+        name: Build Jar
         runs-on: ubuntu-latest
         
         steps:
