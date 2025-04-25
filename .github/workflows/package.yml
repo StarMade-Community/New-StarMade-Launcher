@@ -1,8 +1,6 @@
 ﻿name: Build and Package StarMade Launcher
-
 on:
     workflow_dispatch:
-
 jobs:
     build-jar:
         name: Build Jar
@@ -43,27 +41,18 @@ jobs:
                   name: starmade-launcher-jar
                   path: native-packages/windows/
             
-            # Replace the problematic MinGW setup with a simpler approach
             - name: Setup MinGW
               uses: msys2/setup-msys2@v2
               with:
                   msystem: mingw64
                   update: true
                   install: mingw-w64-x86_64-gcc
-            
-            - name: Create native folder
-              run: mkdir -p src/main/native
-            
-            - name: Copy unified launcher code
-              run: |
-                  mkdir -p src/main/native
-                  copy src\main\c\starmade_launcher.c src\main\native\starmade_launcher.c
-            
+        
             - name: Compile Windows launcher
               shell: msys2 {0}
               run: |
                   cd src/main/native
-                  gcc -o StarMade-Launcher.exe starmade_launcher.c -mwindows -lshlwapi
+                  gcc -o StarMade-Launcher.exe src/main/c/starmade_launcher.c -mwindows -lshlwapi
             
             - name: Set icon with Resource Hacker
               run: |
@@ -108,18 +97,10 @@ jobs:
                     mkdir -p "native-packages/macos/StarMade-Launcher.app/Contents/MacOS"
                     mkdir -p "native-packages/macos/StarMade-Launcher.app/Contents/Resources"
             
-            -   name: Create native folder
-                run: mkdir -p src/main/native
-            
-            -   name: Copy unified launcher code
-                run: |
-                    mkdir -p src/main/native
-                    cp src/main/c/starmade_launcher.c src/main/native/starmade_launcher.c
-            
             -   name: Compile macOS launcher
                 run: |
                     cd src/main/native
-                    gcc -o StarMade-Launcher starmade_launcher.c -framework CoreFoundation
+                    gcc -o StarMade-Launcher src/main/c/starmade_launcher.c -framework CoreFoundation
             
             -   name: Create Info.plist
                 run: |
@@ -193,18 +174,10 @@ jobs:
                 run: |
                     mkdir -p native-packages/linux/starmade-launcher
             
-            -   name: Create native folder
-                run: mkdir -p src/main/native
-            
-            -   name: Copy unified launcher code
-                run: |
-                    mkdir -p src/main/native
-                    cp src/main/c/starmade_launcher.c src/main/native/starmade_launcher.c
-            
             -   name: Compile Linux launcher
                 run: |
                     cd src/main/native
-                    gcc -o StarMade-Launcher starmade_launcher.c
+                    gcc -o StarMade-Launcher src/main/c/starmade_launcher.c
             
             -   name: Copy native launcher
                 run: |
