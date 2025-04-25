@@ -6,7 +6,7 @@ plugins {
 
 group 'smlauncher'
 mainClassName = 'smlauncher.StarMadeLauncher'
-version = '3.2.15'
+version = '3.3.0'
 
 java {
 	toolchain {
@@ -43,6 +43,5 @@ jar {
 		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 	}
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-	archiveFileName = 'StarMade Launcher.jar'
-	destinationDirectory = file('./')
+	archiveFileName = 'StarMade-Launcher.jar'
 }
