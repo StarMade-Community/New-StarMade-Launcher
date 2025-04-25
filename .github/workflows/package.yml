@@ -37,7 +37,7 @@ jobs:
             - uses: actions/checkout@v3
             
             - name: Download JAR
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: starmade-launcher-jar
                   path: native-packages/windows/data
@@ -90,7 +90,7 @@ jobs:
             -   uses: actions/checkout@v3
             
             -   name: Download JAR
-                uses: actions/download-artifact@v3
+                uses: actions/download-artifact@v4
                 with:
                     name: starmade-launcher-jar
                     path: native-packages/macos/StarMade-Launcher.app/Contents/Resources/
@@ -175,7 +175,7 @@ jobs:
             -   uses: actions/checkout@v3
             
             -   name: Download JAR
-                uses: actions/download-artifact@v3
+                uses: actions/download-artifact@v4
                 with:
                     name: starmade-launcher-jar
                     path: native-packages/linux/starmade-launcher/
