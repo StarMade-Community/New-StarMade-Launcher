@@ -43,8 +43,13 @@ jobs:
                   name: starmade-launcher-jar
                   path: native-packages/windows/
             
+            # Replace the problematic MinGW setup with a simpler approach
             - name: Setup MinGW
-              uses: egor-tensin/setup-mingw@v2
+              uses: msys2/setup-msys2@v2
+              with:
+                  msystem: mingw64
+                  update: true
+                  install: mingw-w64-x86_64-gcc
             
             - name: Create native folder
               run: mkdir -p src/main/native
@@ -55,6 +60,7 @@ jobs:
                   copy src\main\c\starmade_launcher.c src\main\native\starmade_launcher.c
             
             - name: Compile Windows launcher
+              shell: msys2 {0}
               run: |
                   cd src/main/native
                   gcc -o StarMade-Launcher.exe starmade_launcher.c -mwindows -lshlwapi
@@ -69,7 +75,7 @@ jobs:
               run: |
                   mkdir -p native-packages/windows/package
                   copy src\main\native\StarMade-Launcher.exe native-packages\windows\package\
-                  copy native-packages\windows\data\* native-packages\windows\package\
+                  copy native-packages\windows\StarMade-Launcher.jar native-packages\windows\package\
                   copy StarMade-dedicated-server-windows.bat native-packages\windows\package\
             
             - name: Create ZIP archive
@@ -229,7 +235,7 @@ jobs:
                     # Copy icon
                     mkdir -p native-packages/linux/starmade-launcher/desktop/icons
                     cp src/main/resources/starmade.png native-packages/linux/starmade-launcher/desktop/icons/starmade-launcher.png
-    
+            
             -   name: Create tar.gz archive
                 run: |
                     cd native-packages/linux
