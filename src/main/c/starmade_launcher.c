@@ -38,7 +38,12 @@
     #include <unistd.h>
     #include <sys/stat.h>
     #include <libgen.h>
+    #include <limits.h>  // Added for PATH_MAX on Linux
     #define PATH_SEPARATOR '/'
+    // Define PATH_MAX if it's not defined (some Linux systems)
+    #ifndef PATH_MAX
+        #define PATH_MAX 4096
+    #endif
 #endif
 
 // Define constants
