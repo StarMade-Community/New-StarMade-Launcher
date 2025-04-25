@@ -30,6 +30,7 @@ jobs:
                   path: build/libs/StarMade-Launcher.jar
     
     package-windows:
+        name: Package for Windows
         needs: build-jar
         runs-on: windows-latest
         
@@ -77,12 +78,13 @@ jobs:
                   7z a ../StarMade-Launcher-Windows.zip *
             
             - name: Upload Windows package
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: starmade-launcher-windows
                   path: native-packages/windows/StarMade-Launcher-Windows.zip
     
     package-macos:
+        name: Package for MacOS
         needs: build-jar
         runs-on: macos-latest
         
@@ -162,12 +164,13 @@ jobs:
                     zip -r ../StarMade-Launcher-MacOS.zip StarMade-Launcher.app StarMade-dedicated-server-macos.command
             
             -   name: Upload macOS package
-                uses: actions/upload-artifact@v3
+                uses: actions/upload-artifact@v4
                 with:
                     name: starmade-launcher-macos
                     path: native-packages/StarMade-Launcher-MacOS.zip
     
     package-linux:
+        name: Package for Linux
         needs: build-jar
         runs-on: ubuntu-latest
         
@@ -233,7 +236,7 @@ jobs:
                     tar -czf ../StarMade-Launcher-Linux.tar.gz starmade-launcher
             
             -   name: Upload Linux package
-                uses: actions/upload-artifact@v3
+                uses: actions/upload-artifact@v4
                 with:
                     name: starmade-launcher-linux
                     path: native-packages/StarMade-Launcher-Linux.tar.gz
