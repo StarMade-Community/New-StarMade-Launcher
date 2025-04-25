@@ -55,6 +55,13 @@ jobs:
                     name: starmade-launcher-jar
                     path: native-packages/windows/
             
+            -   name: Download Java Runtimes
+                run: |
+                    mkdir -p native-packages/windows/package/jre8
+                    mkdir -p native-packages/windows/package/jre23
+                    Expand-Archive -Path java/windows/jre8.zip -DestinationPath native-packages/windows/package/jre8
+                    Expand-Archive -Path java/windows/jre23.zip -DestinationPath native-packages/windows/package/jre23
+            
             -   name: Setup MinGW
                 uses: msys2/setup-msys2@v2
                 with:
@@ -92,16 +99,17 @@ jobs:
                     copy native-packages\windows\StarMade-Launcher.jar native-packages\windows\package\
                     copy StarMade-dedicated-server-windows.bat native-packages\windows\package\
             
-            -   name: Create ZIP archive
+            -   name: Package Windows distribution
                 run: |
-                    cd native-packages/windows/package
-                    7z a ../StarMade-Launcher-Windows.zip *
-            
-            -   name: Upload Windows package
-                uses: actions/upload-artifact@v4
-                with:
-                    name: starmade-launcher-windows
-                    path: native-packages/windows/StarMade-Launcher-Windows.zip
+                    mkdir -p native-packages/windows/package
+                    copy src\main\native\StarMade-Launcher.exe native-packages\windows\package\
+                    copy native-packages\windows\StarMade-Launcher.jar native-packages\windows\package\
+                    copy StarMade-dedicated-server-windows.bat native-packages\windows\package\
+                    
+                    -   name: Create ZIP archive
+                        run: |
+                            cd native-packages/windows/package
+                            7z a ../StarMade-Launcher-Windows.zip *
     
     package-macos:
         name: Package for MacOS
@@ -116,6 +124,13 @@ jobs:
                 with:
                     name: starmade-launcher-jar
                     path: native-packages/macos/StarMade-Launcher.app/Contents/Resources/
+            
+            -   name: Download and Extract Java Runtimes
+                run: |
+                    mkdir -p native-packages/macos/StarMade-Launcher.app/Contents/jre8
+                    mkdir -p native-packages/macos/StarMade-Launcher.app/Contents/jre23
+                    tar -xzf java/macos/jre8.tar.gz -C native-packages/macos/StarMade-Launcher.app/Contents/jre8
+                    tar -xzf java/macos/jre23.tar.gz -C native-packages/macos/StarMade-Launcher.app/Contents/jre23
             
             -   name: Create app bundle structure
                 run: |
@@ -202,6 +217,13 @@ jobs:
                 with:
                     name: starmade-launcher-jar
                     path: native-packages/linux/starmade-launcher/
+            
+            -   name: Download and Extract Java Runtimes
+                run: |
+                    mkdir -p native-packages/linux/starmade-launcher/jre8
+                    mkdir -p native-packages/linux/starmade-launcher/jre23
+                    tar -xzf java/linux/jre8.tar.gz -C native-packages/linux/starmade-launcher/jre8
+                    tar -xzf java/linux/jre23.tar.gz -C native-packages/linux/starmade-launcher/jre23
             
             -   name: Create directory structure
                 run: |
