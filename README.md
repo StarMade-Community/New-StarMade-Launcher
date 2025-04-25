@@ -3,7 +3,7 @@
 This is the launcher for [StarMade](https://www.star-made.org/). It is a Java application that will download and install
 StarMade for you. It will also keep StarMade up to date and can be used to switch branches.
 The launcher can also automatically download and install the correct Java version as well. Game versions below 0.300.100
-use Java 8, while versions 0.300.100 and above use Java 21.
+use Java 8, while versions 0.300.100 and above use Java 23.
 This launcher was created due to the old one being outdated and only being able to use Java 7.
 
 
