@@ -67,10 +67,11 @@ jobs:
                     gcc -o StarMade-Launcher.exe starmade_launcher.c -mwindows -lshlwapi
             
             -   name: Set icon with Resource Hacker
+                shell: pwsh
                 run: |
-                    curl -L -o reshacker.exe http://www.angusj.com/resourcehacker/resource_hacker.zip
-                    unzip reshacker.exe
-                    ResourceHacker.exe -open src/main/native/StarMade-Launcher.exe -save src/main/native/StarMade-Launcher.exe -action addoverwrite -res src/main/resources/starmade.ico -mask ICONGROUP,MAINICON,
+                    curl -L -o reshacker.zip http://www.angusj.com/resourcehacker/resource_hacker.zip
+                    Expand-Archive -Path reshacker.zip -DestinationPath reshacker
+                    .\reshacker\ResourceHacker.exe -open src\main\native\StarMade-Launcher.exe -save src\main\native\StarMade-Launcher.exe -action addoverwrite -res src\main\resources\starmade.ico -mask ICONGROUP,MAINICON,
             
             -   name: Package Windows distribution
                 run: |
