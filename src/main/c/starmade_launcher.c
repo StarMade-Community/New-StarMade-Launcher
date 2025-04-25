@@ -1,7 +1,7 @@
 ﻿/**
  * StarMade Launcher - Native Component
  *
- * This is a unified C launcher for StarMade that works on Windows, macOS, and Linux.
+ * This is a unified C launcher for StarMade that works on Windows, MacOS, and Linux.
  * It detects the current platform, finds the appropriate Java runtime, and launches
  * the StarMade Launcher JAR.
  *
