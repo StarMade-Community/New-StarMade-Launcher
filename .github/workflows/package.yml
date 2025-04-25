@@ -20,6 +20,12 @@ jobs:
             -   name: Grant execute permission for gradlew
                 run: chmod +x gradlew
             
+            -   name: Get Project Version
+                id: get_version
+                run: |
+                    VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
+                    echo "PROJECT_VERSION=$VERSION" >> $GITHUB_OUTPUT
+            
             -   name: Build with Gradle
                 run: ./gradlew jar
             
@@ -28,6 +34,9 @@ jobs:
                 with:
                     name: starmade-launcher-jar
                     path: build/libs/StarMade-Launcher.jar
+        
+        outputs:
+            project_version: ${{ steps.get_version.outputs.PROJECT_VERSION }}
     
     package-windows:
         name: Package for Windows
@@ -143,9 +152,9 @@ jobs:
                         <key>CFBundlePackageType</key>
                         <string>APPL</string>
                         <key>CFBundleShortVersionString</key>
-                        <string>3.3.0</string>
+                        <string>${{ needs.build-jar.outputs.project_version }}</string>
                         <key>CFBundleVersion</key>
-                        <string>3.3.0</string>
+                        <string>${{ needs.build-jar.outputs.project_version }}</string>
                         <key>NSHighResolutionCapable</key>
                         <true/>
                     </dict>
@@ -248,3 +257,36 @@ jobs:
                 with:
                     name: starmade-launcher-linux
                     path: native-packages/StarMade-Launcher-Linux.tar.gz
+    
+    create-release:
+        name: Create Draft Release
+        needs:
+            - build-jar
+            - package-windows
+            - package-macos
+            - package-linux
+        runs-on: ubuntu-latest
+        
+        steps:
+            -   uses: actions/checkout@v4
+            
+            -   name: Download Artifacts
+                uses: actions/download-artifact@v4
+                with:
+                    path: artifacts
+                    merge-multiple: true
+            
+            -   name: List Artifacts
+                run: ls -R artifacts
+            
+            -   name: Create Draft Release
+                uses: softprops/action-gh-release@v2
+                with:
+                    draft: true
+                    tag_name: v${{ needs.build-jar.outputs.project_version }}
+                    name: StarMade Launcher v${{ needs.build-jar.outputs.project_version }}
+                    files: |
+                        artifacts/StarMade-Launcher-Windows.zip
+                        artifacts/StarMade-Launcher-MacOS.zip
+                        artifacts/StarMade-Launcher-Linux.tar.gz
+                        artifacts/StarMade-Launcher.jar
