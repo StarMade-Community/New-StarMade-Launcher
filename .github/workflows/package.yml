@@ -9,25 +9,25 @@ jobs:
         runs-on: ubuntu-latest
         
         steps:
-            - uses: actions/checkout@v3
+            -   uses: actions/checkout@v3
             
-            - name: Set up JDK 23
-              uses: actions/setup-java@v3
-              with:
-                  java-version: '23'
-                  distribution: 'temurin'
+            -   name: Set up JDK 23
+                uses: actions/setup-java@v3
+                with:
+                    java-version: '23'
+                    distribution: 'temurin'
             
-            - name: Grant execute permission for gradlew
-              run: chmod +x gradlew
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
             
-            - name: Build with Gradle
-              run: ./gradlew jar
+            -   name: Build with Gradle
+                run: ./gradlew jar
             
-            - name: Upload JAR
-              uses: actions/upload-artifact@v4
-              with:
-                  name: starmade-launcher-jar
-                  path: build/libs/StarMade-Launcher.jar
+            -   name: Upload JAR
+                uses: actions/upload-artifact@v4
+                with:
+                    name: starmade-launcher-jar
+                    path: build/libs/StarMade-Launcher.jar
     
     package-windows:
         name: Package for Windows
@@ -35,58 +35,60 @@ jobs:
         runs-on: windows-latest
         
         steps:
-            - uses: actions/checkout@v3
+            -   uses: actions/checkout@v3
             
-            - name: Download JAR
-              uses: actions/download-artifact@v4
-              with:
-                  name: starmade-launcher-jar
-                  path: native-packages/windows/
+            -   name: Download JAR
+                uses: actions/download-artifact@v4
+                with:
+                    name: starmade-launcher-jar
+                    path: native-packages/windows/
             
-            - name: Setup MinGW
-              uses: msys2/setup-msys2@v2
-              with:
-                  msystem: mingw64
-                  update: true
-                  install: mingw-w64-x86_64-gcc
+            -   name: Setup MinGW
+                uses: msys2/setup-msys2@v2
+                with:
+                    msystem: mingw64
+                    update: true
+                    install: mingw-w64-x86_64-gcc
             
-            - name: Create native folder
-              run: mkdir -p src/main/native
+            -   name: Create native folder
+                shell: pwsh
+                run: |
+                    New-Item -Path "src/main/native" -ItemType Directory -Force
             
-            - name: Copy unified launcher code
-              run: |
-                  mkdir -p src/main/native
-                  cp src/main/c/starmade_launcher.c src/main/native/starmade_launcher.c
+            -   name: Copy unified launcher code
+                shell: pwsh
+                run: |
+                    Copy-Item "src/main/c/starmade_launcher.c" -Destination "src/main/native/starmade_launcher.c"
             
-            - name: Compile Windows launcher
-              shell: msys2 {0}
-              run: |
-                  cd src/main/native
-                  gcc -o StarMade-Launcher.exe starmade_launcher.c -mwindows -lshlwapi
+            -   name: Compile Windows launcher
+                shell: msys2 {0}
+                run: |
+                    cd src/main/native
+                    gcc -o StarMade-Launcher.exe starmade_launcher.c -mwindows -lshlwapi
             
-            - name: Set icon with Resource Hacker
-              run: |
-                  curl -L -o reshacker.exe http://www.angusj.com/resourcehacker/resource_hacker.zip
-                  unzip reshacker.exe
-                  ResourceHacker.exe -open src/main/native/StarMade-Launcher.exe -save src/main/native/StarMade-Launcher.exe -action addoverwrite -res src/main/resources/starmade.ico -mask ICONGROUP,MAINICON,
+            -   name: Set icon with Resource Hacker
+                run: |
+                    curl -L -o reshacker.exe http://www.angusj.com/resourcehacker/resource_hacker.zip
+                    unzip reshacker.exe
+                    ResourceHacker.exe -open src/main/native/StarMade-Launcher.exe -save src/main/native/StarMade-Launcher.exe -action addoverwrite -res src/main/resources/starmade.ico -mask ICONGROUP,MAINICON,
             
-            - name: Package Windows distribution
-              run: |
-                  mkdir -p native-packages/windows/package
-                  copy src\main\native\StarMade-Launcher.exe native-packages\windows\package\
-                  copy native-packages\windows\StarMade-Launcher.jar native-packages\windows\package\
-                  copy StarMade-dedicated-server-windows.bat native-packages\windows\package\
+            -   name: Package Windows distribution
+                run: |
+                    mkdir -p native-packages/windows/package
+                    copy src\main\native\StarMade-Launcher.exe native-packages\windows\package\
+                    copy native-packages\windows\StarMade-Launcher.jar native-packages\windows\package\
+                    copy StarMade-dedicated-server-windows.bat native-packages\windows\package\
             
-            - name: Create ZIP archive
-              run: |
-                  cd native-packages/windows/package
-                  7z a ../StarMade-Launcher-Windows.zip *
+            -   name: Create ZIP archive
+                run: |
+                    cd native-packages/windows/package
+                    7z a ../StarMade-Launcher-Windows.zip *
             
-            - name: Upload Windows package
-              uses: actions/upload-artifact@v4
-              with:
-                  name: starmade-launcher-windows
-                  path: native-packages/windows/StarMade-Launcher-Windows.zip
+            -   name: Upload Windows package
+                uses: actions/upload-artifact@v4
+                with:
+                    name: starmade-launcher-windows
+                    path: native-packages/windows/StarMade-Launcher-Windows.zip
     
     package-macos:
         name: Package for MacOS
