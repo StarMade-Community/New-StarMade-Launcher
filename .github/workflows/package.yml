@@ -271,7 +271,7 @@ jobs:
         runs-on: ubuntu-latest
         
         steps:
-            -   uses: actions/checkout@v4
+            -   uses: actions/checkout@v3
             
             -   name: Download Artifacts
                 uses: actions/download-artifact@v4
@@ -279,8 +279,27 @@ jobs:
                     path: artifacts
                     merge-multiple: true
             
-            -   name: List Artifacts
-                run: ls -R artifacts
+            -   name: Prepare Artifacts
+                run: |
+                    # Unzip any nested zips to ensure correct file structure
+                    cd artifacts
+                    for file in *.zip; do
+                      if [ -f "$file" ]; then
+                        unzip "$file"
+                        rm "$file"
+                      fi
+                    done
+                    
+                    # Unpack tar.gz files
+                    for file in *.tar.gz; do
+                      if [ -f "$file" ]; then
+                        tar -xzvf "$file"
+                        rm "$file"
+                      fi
+                    done
+                    
+                    # List final contents
+                    ls -R
             
             -   name: Create Draft Release
                 uses: softprops/action-gh-release@v2
@@ -291,7 +310,4 @@ jobs:
                     tag_name: v${{ needs.build-jar.outputs.project_version }}
                     name: StarMade Launcher v${{ needs.build-jar.outputs.project_version }}
                     files: |
-                        artifacts/StarMade-Launcher-Windows.zip
-                        artifacts/StarMade-Launcher-MacOS.zip
-                        artifacts/StarMade-Launcher-Linux.tar.gz
-                        artifacts/StarMade-Launcher.jar
+                        artifacts/*
