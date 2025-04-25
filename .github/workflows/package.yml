@@ -56,7 +56,7 @@ jobs:
             - name: Copy unified launcher code
               run: |
                   mkdir -p src/main/native
-                  copy src\main\c\starmade_launcher.c src\main\native\starmade_launcher.c
+                  cp src/main/c/starmade_launcher.c src/main/native/starmade_launcher.c
             
             - name: Compile Windows launcher
               shell: msys2 {0}
