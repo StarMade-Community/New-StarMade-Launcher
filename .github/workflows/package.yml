@@ -3,6 +3,9 @@
 on:
     workflow_dispatch:
 
+permissions:
+    contents: write
+
 jobs:
     build-jar:
         name: Build Jar
@@ -281,6 +284,8 @@ jobs:
             
             -   name: Create Draft Release
                 uses: softprops/action-gh-release@v2
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:
                     draft: true
                     tag_name: v${{ needs.build-jar.outputs.project_version }}
